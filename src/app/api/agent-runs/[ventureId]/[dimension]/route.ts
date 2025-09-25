@@ -13,28 +13,16 @@ export async function GET(
   try {
     const { ventureId, dimension } = await params;
 
-    // Get the latest submission for this venture
-    const { data: submission, error: subError } = await supabase
-      .from('submissions')
-      .select('id')
-      .eq('venture_id', ventureId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (subError && subError.code !== 'PGRST116') {
-      return NextResponse.json({ error: 'Failed to find submission' }, { status: 500 });
-    }
-
-    if (!submission) {
-      return NextResponse.json({ error: 'No submission found' }, { status: 404 });
-    }
-
-    // Get the agent run for this dimension and submission
+    // Get the agent run for this dimension and venture (by finding the submission that has agent runs)
     const { data: agentRun, error: runError } = await supabase
       .from('agent_runs')
-      .select('*')
-      .eq('submission_id', submission.id)
+      .select(`
+        *,
+        submissions!inner(
+          venture_id
+        )
+      `)
+      .eq('submissions.venture_id', ventureId)
       .eq('dimension', dimension)
       .order('created_at', { ascending: false })
       .limit(1)
