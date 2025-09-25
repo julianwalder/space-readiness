@@ -58,7 +58,7 @@ export default function DimensionsGrid() {
     }
   }, [active, open]);
 
-  const LevelRows = ({ dim: _dim }: { dim: Dimension }) => {
+  const LevelRows = () => {
     const levels: Level[] = [1,2,3,4,5,6,7,8,9];
     
     
@@ -111,7 +111,7 @@ export default function DimensionsGrid() {
             <DialogTitle>{active ? `${EMOJI[active]} ${active} — Levels 1–9` : 'Levels'}</DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] pr-2">
-            {active && <LevelRows dim={active} />}
+            {active && <LevelRows />}
           </ScrollArea>
         </DialogContent>
       </Dialog>

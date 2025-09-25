@@ -365,7 +365,7 @@ export default function FirstTimeAnalysisCard({
                         <div className="text-xs text-gray-500">
                           Estimated timeline: {rec.timeline}
                         </div>
-                        {rec.dependency && (
+                        {'dependency' in rec && rec.dependency && (
                           <div className="text-xs text-gray-500 mt-1">
                             Dependency: {rec.dependency}
                           </div>

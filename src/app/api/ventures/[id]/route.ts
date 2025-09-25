@@ -8,9 +8,11 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     // Get the authorization header
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -28,7 +30,7 @@ export async function GET(
     const { data, error } = await supabase
       .from('ventures')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) {
@@ -48,9 +50,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     // Get the authorization header
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -80,7 +84,7 @@ export async function PUT(
         profile_type: profile_type || null,
         description: description || null
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -101,9 +105,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     // Get the authorization header
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -121,7 +127,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('ventures')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) {
       console.error('Error deleting venture:', error);

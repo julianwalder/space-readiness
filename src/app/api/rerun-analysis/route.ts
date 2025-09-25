@@ -156,7 +156,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Get the latest submission for this venture
-    const { data: submission, error: subError } = await supabase
+    let submission;
+    const { data: existingSubmission, error: subError } = await supabase
       .from('submissions')
       .select('id')
       .eq('venture_id', ventureId)
@@ -168,7 +169,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to find submission' }, { status: 500 });
     }
 
-    if (!submission) {
+    if (!existingSubmission) {
       // Create a submission if none exists
       const { data: newSubmission, error: createSubError } = await supabase
         .from('submissions')
@@ -183,6 +184,8 @@ export async function POST(req: NextRequest) {
 
       // Use the new submission
       submission = newSubmission;
+    } else {
+      submission = existingSubmission;
     }
 
     // Get the existing agent run to base variations on

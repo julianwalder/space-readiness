@@ -164,10 +164,27 @@ export async function updateLevelDescription(
   description: string
 ): Promise<void> {
   try {
+    // Get the current level descriptions
+    const { data: currentData, error: fetchError } = await supabase
+      .from('rubric')
+      .select('level_descriptions')
+      .eq('dimension', dimension)
+      .single();
+
+    if (fetchError) {
+      throw new Error(`Failed to fetch current rubric: ${fetchError.message}`);
+    }
+
+    // Update the specific level description
+    const updatedDescriptions = {
+      ...currentData.level_descriptions,
+      [level]: description
+    };
+
     const { error } = await supabase
       .from('rubric')
       .update({
-        level_descriptions: supabase.raw(`jsonb_set(level_descriptions, '{${level}}', '"${description}"')`)
+        level_descriptions: updatedDescriptions
       })
       .eq('dimension', dimension);
 

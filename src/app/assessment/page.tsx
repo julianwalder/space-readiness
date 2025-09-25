@@ -6,7 +6,7 @@ import { useVenture } from '@/contexts/VentureContext';
 import VentureSelector from '@/components/VentureSelector';
 
 export default function Assessment() {
-  const { currentVenture } = useVenture();
+  const { currentVenture, setCurrentVenture, ventures } = useVenture();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -146,7 +146,19 @@ export default function Assessment() {
 
           {/* Venture Selector */}
           <div className="mb-8">
-            <VentureSelector />
+            <VentureSelector 
+              currentVentureId={currentVenture?.id || null}
+              onVentureChange={(ventureId) => {
+                if (ventureId) {
+                  const venture = ventures.find(v => v.id === ventureId);
+                  if (venture) {
+                    setCurrentVenture(venture);
+                  }
+                } else {
+                  setCurrentVenture(null);
+                }
+              }}
+            />
           </div>
 
           {/* Requirements Check */}

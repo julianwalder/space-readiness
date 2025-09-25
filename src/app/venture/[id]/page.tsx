@@ -33,7 +33,7 @@ interface Venture {
   stage?: string;
   description?: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export default function VentureManagement() {

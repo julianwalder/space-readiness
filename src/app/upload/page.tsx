@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
@@ -26,31 +26,7 @@ export default function Upload() {
   const [isLoadingFiles, setIsLoadingFiles] = useState(false);
   const [referrer, setReferrer] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Get the referrer from the URL search params
-    const urlParams = new URLSearchParams(window.location.search);
-    const fromParam = urlParams.get('from');
-    
-    if (fromParam) {
-      setReferrer(fromParam);
-    } else if (document.referrer) {
-      try {
-        const referrerUrl = new URL(document.referrer);
-        setReferrer(referrerUrl.pathname);
-      } catch {
-        setReferrer('/dashboard');
-      }
-    } else {
-      setReferrer('/dashboard');
-    }
-
-    // Load existing files if a venture is selected
-    if (currentVenture) {
-      loadUploadedFiles();
-    }
-  }, [currentVenture, loadUploadedFiles]);
-
-  const loadUploadedFiles = async () => {
+  const loadUploadedFiles = useCallback(async () => {
     if (!currentVenture) return;
 
     setIsLoadingFiles(true);
@@ -79,7 +55,31 @@ export default function Upload() {
     } finally {
       setIsLoadingFiles(false);
     }
-  };
+  }, [currentVenture]);
+
+  useEffect(() => {
+    // Get the referrer from the URL search params
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromParam = urlParams.get('from');
+    
+    if (fromParam) {
+      setReferrer(fromParam);
+    } else if (document.referrer) {
+      try {
+        const referrerUrl = new URL(document.referrer);
+        setReferrer(referrerUrl.pathname);
+      } catch {
+        setReferrer('/dashboard');
+      }
+    } else {
+      setReferrer('/dashboard');
+    }
+
+    // Load existing files if a venture is selected
+    if (currentVenture) {
+      loadUploadedFiles();
+    }
+  }, [currentVenture, loadUploadedFiles]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

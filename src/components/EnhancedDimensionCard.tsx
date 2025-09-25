@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useVenture } from '@/contexts/VentureContext';
 import DimensionScoreCard from './DimensionScoreCard';
@@ -50,7 +50,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
   const [hasFiles, setHasFiles] = useState(false);
 
   // Load the latest agent run for this dimension and venture
-  const loadAgentRun = async () => {
+  const loadAgentRun = useCallback(async () => {
     if (!currentVenture) return;
     
     setIsLoadingRun(true);
@@ -75,10 +75,10 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
     } finally {
       setIsLoadingRun(false);
     }
-  };
+  }, [currentVenture, dimension]);
 
   // Check if venture has uploaded files
-  const checkForFiles = async () => {
+  const checkForFiles = useCallback(async () => {
     if (!currentVenture) return;
     
     try {
@@ -97,7 +97,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
     } catch (error) {
       console.error('Error checking files:', error);
     }
-  };
+  }, [currentVenture]);
 
   // Load agent run and check files on mount and when venture or dimension changes
   useEffect(() => {

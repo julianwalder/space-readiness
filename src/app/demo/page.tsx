@@ -226,7 +226,7 @@ export default function Demo() {
                     {Object.entries(milestone.target_levels_json).map(([dim, level]) => (
                       <div key={dim} className="flex justify-between">
                         <span>{dim}:</span>
-                        <span className="font-medium">{level}/9</span>
+                        <span className="font-medium">{String(level)}/9</span>
                       </div>
                     ))}
                   </div>
