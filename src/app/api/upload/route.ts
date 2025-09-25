@@ -280,16 +280,20 @@ export async function GET(request: NextRequest) {
     }
 
     // Format response
-    const formattedFiles = files?.map(file => ({
-      id: file.id,
-      fileName: file.path.split('/').pop(),
-      mimeType: file.mime,
-      size: file.size,
-      uploadedAt: file.created_at,
-      submissionId: file.submissions?.id || null,
-      submissionStatus: file.submissions?.status || 'unknown',
-      ventureName: file.submissions?.ventures?.name || 'Unknown Venture'
-    })).filter(file => file.submissionId !== null) || [];
+    const formattedFiles = files?.map(file => {
+      // Type assertion to handle the Supabase query result structure
+      const submission = file.submissions as any;
+      return {
+        id: file.id,
+        fileName: file.path.split('/').pop(),
+        mimeType: file.mime,
+        size: file.size,
+        uploadedAt: file.created_at,
+        submissionId: submission?.id || null,
+        submissionStatus: submission?.status || 'unknown',
+        ventureName: submission?.ventures?.name || 'Unknown Venture'
+      };
+    }).filter(file => file.submissionId !== null) || [];
 
     return NextResponse.json({
       success: true,
