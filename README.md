@@ -1,36 +1,152 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Space Readiness Assessment Platform
 
-## Getting Started
+An AI-powered venture readiness assessment platform that evaluates space industry ventures across 8 key dimensions using advanced AI agents and provides actionable insights for improvement.
 
-First, run the development server:
+## 🚀 Features
+
+- **8-Dimension Analysis**: Technology, Customer/Market, Business Model, Team, IP, Funding, Sustainability, and System Integration
+- **AI-Powered Agents**: Automated assessment using sophisticated AI agents with confidence scoring
+- **Real-time Processing**: BullMQ worker system for asynchronous job processing
+- **Dynamic UI**: Modern, responsive interface with structured analysis cards
+- **File Upload System**: Production-ready document upload with Supabase Storage
+- **Venture Management**: Complete CRUD operations for venture data
+- **Assessment Tracking**: Progress monitoring and recommendation management
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 15 with Turbopack, React, TypeScript
+- **UI Components**: Shadcn/ui with Tailwind CSS
+- **Backend**: Next.js API Routes with Supabase
+- **Database**: PostgreSQL (Supabase)
+- **Queue System**: BullMQ with Redis (Upstash)
+- **Storage**: Supabase Storage for file uploads
+- **Authentication**: Supabase Auth
+
+## 📋 Prerequisites
+
+- Node.js 18+ 
+- pnpm (recommended) or npm
+- Supabase account
+- Redis instance (Upstash recommended)
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/julianwalder/space-readiness.git
+cd space-readiness
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Environment Setup
 
-## Learn More
+Create a `.env.local` file in the root directory:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Redis Configuration (Upstash)
+REDIS_URL=your_redis_url
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Optional: For development
+NODE_ENV=development
+```
 
-## Deploy on Vercel
+### 4. Database Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Set up your Supabase project
+2. Run the SQL migrations (see `docs/PRODUCTION_UPLOAD_SETUP.md`)
+3. Configure Row Level Security (RLS) policies
+4. Set up Supabase Storage buckets
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Start Development Server
+
+```bash
+# Start the Next.js development server
+pnpm dev
+
+# In a separate terminal, start the worker
+pnpm worker
+```
+
+### 6. Access the Application
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── (authenticated)/    # Protected routes
+│   │   ├── api/               # API routes
+│   │   └── ...
+│   ├── components/            # React components
+│   │   ├── ui/               # Shadcn/ui components
+│   │   └── ...
+│   ├── lib/                  # Utility libraries
+│   └── contexts/             # React contexts
+├── worker/                   # BullMQ worker system
+├── docs/                     # Documentation
+└── public/                   # Static assets
+```
+
+## 🔧 Available Scripts
+
+```bash
+# Development
+pnpm dev          # Start development server
+pnpm worker       # Start BullMQ worker
+
+# Production
+pnpm build        # Build for production
+pnpm start        # Start production server
+
+# Testing & Debugging
+pnpm ping-redis   # Test Redis connectivity
+pnpm bullmq-smoke # Test BullMQ functionality
+```
+
+## 🔒 Security
+
+- Environment variables are properly excluded via `.gitignore`
+- SQL files and scripts are excluded from version control
+- RLS policies protect database access
+- Service role keys are server-side only
+
+## 📚 Documentation
+
+- [Production Upload Setup](docs/PRODUCTION_UPLOAD_SETUP.md) - Complete setup guide
+- [API Documentation](src/app/api/) - API endpoint documentation
+- [Component Library](src/components/) - UI component documentation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🚀 Deployment
+
+The easiest way to deploy is using [Vercel](https://vercel.com):
+
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy!
+
+For other deployment options, see the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
