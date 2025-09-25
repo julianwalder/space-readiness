@@ -80,7 +80,16 @@ export default function VentureSelector({ currentVentureId, onVentureChange }: V
 
     setIsCreating(true);
     try {
-      const ventureData: { name: string; stage?: string; description?: string } = { name: newVentureName.trim() };
+      // Get the current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        throw new Error('Please sign in to create a venture');
+      }
+
+      const ventureData: { name: string; stage?: string; description?: string; user_id: string } = { 
+        name: newVentureName.trim(),
+        user_id: user.id // associate venture with the current user
+      };
       if (newVentureStage.trim()) {
         ventureData.stage = newVentureStage.trim();
       }
