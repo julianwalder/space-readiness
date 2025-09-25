@@ -282,7 +282,7 @@ export async function GET(request: NextRequest) {
     // Format response
     const formattedFiles = files?.map(file => {
       // Type assertion to handle the Supabase query result structure
-      const submission = file.submissions as any;
+      const submission = file.submissions as { id: string; status: string; ventures: { name: string } };
       return {
         id: file.id,
         fileName: file.path.split('/').pop(),
