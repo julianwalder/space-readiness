@@ -286,10 +286,10 @@ export async function GET(request: NextRequest) {
       mimeType: file.mime,
       size: file.size,
       uploadedAt: file.created_at,
-      submissionId: file.submissions[0].id,
-      submissionStatus: file.submissions[0].status,
-      ventureName: file.submissions[0].ventures[0].name
-    })) || [];
+      submissionId: file.submissions?.id || null,
+      submissionStatus: file.submissions?.status || 'unknown',
+      ventureName: file.submissions?.ventures?.name || 'Unknown Venture'
+    })).filter(file => file.submissionId !== null) || [];
 
     return NextResponse.json({
       success: true,
