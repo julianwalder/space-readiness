@@ -123,7 +123,7 @@ export default function VentureManagement() {
     if (ventureId) {
       loadVenture();
     }
-  }, [ventureId, ventures]);
+  }, [ventureId, ventures, router]);
 
   const handleSave = async () => {
     try {
@@ -137,7 +137,7 @@ export default function VentureManagement() {
       };
 
 
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from('ventures')
         .update(updateData)
         .eq('id', ventureId)
@@ -470,7 +470,7 @@ export default function VentureManagement() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Venture</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{venture.name}"? This action cannot be undone and will permanently delete:
+              Are you sure you want to delete &ldquo;{venture.name}&rdquo;? This action cannot be undone and will permanently delete:
             </AlertDialogDescription>
             <div className="mt-2">
               <ul className="list-disc list-inside text-sm text-muted-foreground">

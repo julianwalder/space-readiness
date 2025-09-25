@@ -37,7 +37,7 @@ export default function Upload() {
       try {
         const referrerUrl = new URL(document.referrer);
         setReferrer(referrerUrl.pathname);
-      } catch (e) {
+      } catch {
         setReferrer('/dashboard');
       }
     } else {
@@ -48,7 +48,7 @@ export default function Upload() {
     if (currentVenture) {
       loadUploadedFiles();
     }
-  }, [currentVenture]);
+  }, [currentVenture, loadUploadedFiles]);
 
   const loadUploadedFiles = async () => {
     if (!currentVenture) return;

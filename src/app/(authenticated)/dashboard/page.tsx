@@ -28,7 +28,7 @@ const formatFileSize = (bytes: number) => {
 };
 
 export default function Dashboard() {
-  const { currentVenture, setCurrentVenture, ventures } = useVenture();
+  const { currentVenture, ventures } = useVenture();
   const [scores, setScores] = useState<Score[]>([]);
   const [recs, setRecs] = useState<Rec[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { getLevelDesc, getRubricDataSync, preloadRubricData, type Dimension, type Level } from '@/lib/rubric-service';
+import { getLevelDesc, getRubricDataSync, type Dimension, type Level } from '@/lib/rubric-service';
 
 type Score = { dimension: string; level: number; confidence: number };
 
@@ -17,7 +16,7 @@ export default function DimensionScoreCard({ dimension, scores, title, descripti
   const currentScore = scores.length > 0 ? scores[0] : null;
   const [showAllLevels, setShowAllLevels] = useState(false);
   const [levelDescriptions, setLevelDescriptions] = useState<Record<Level, string>>({} as Record<Level, string>);
-  const [isLoadingDescriptions, setIsLoadingDescriptions] = useState(true);
+  const [, setIsLoadingDescriptions] = useState(true);
 
   // Load level descriptions from Supabase
   useEffect(() => {
@@ -75,7 +74,7 @@ export default function DimensionScoreCard({ dimension, scores, title, descripti
               {([1,2,3,4,5,6,7,8,9] as Level[]).map((level) => {
                 const isCurrentLevel = currentScore && currentScore.level === level;
                 const isCompleted = currentScore && currentScore.level > level;
-                const isFuture = !currentScore || currentScore.level < level;
+                // const isFuture = !currentScore || currentScore.level < level;
                 
                 return (
                   <div

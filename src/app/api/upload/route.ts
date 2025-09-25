@@ -139,7 +139,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate secure file path
-    const fileExt = fileName.split('.').pop();
     const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
     const timestamp = Date.now();
     const filePath = `${user.id}/${ventureId}/${timestamp}_${sanitizedFileName}`;
@@ -148,7 +147,7 @@ export async function POST(request: NextRequest) {
     const fileBuffer = Buffer.from(fileContent, 'base64');
 
     // Upload file to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('readiness-uploads')
       .upload(filePath, fileBuffer, {
         contentType: mimeType,

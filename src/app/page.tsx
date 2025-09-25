@@ -70,7 +70,7 @@ export default function Landing() {
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             <div className="rounded-2xl border p-6"><h3 className="font-semibold">1) Intake</h3><p className="mt-2 text-gray-600">Guided questions + file uploads (deck, tech report, LoIs).</p></div>
             <div className="rounded-2xl border p-6"><h3 className="font-semibold">2) AI Scoring</h3><p className="mt-2 text-gray-600">Agents assess evidence and assign 1–9 levels with confidence & justification.</p></div>
-            <div className="rounded-2xl border p-6"><h3 className="font-semibold">3) Roadmap</h3><p className="mt-2 text-gray-600">Prioritized next steps and "what-if" simulations to hit milestones.</p></div>
+            <div className="rounded-2xl border p-6"><h3 className="font-semibold">3) Roadmap</h3><p className="mt-2 text-gray-600">Prioritized next steps and &ldquo;what-if&rdquo; simulations to hit milestones.</p></div>
           </div>
         </section>
       </main>

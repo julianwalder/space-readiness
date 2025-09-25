@@ -29,7 +29,7 @@ export default function Signup() {
         setMessage('Check your inbox for the sign-in link.');
         setIsSuccess(true);
       }
-    } catch (err) {
+    } catch {
       setMessage('An unexpected error occurred. Please try again.');
       setIsSuccess(false);
     } finally {
@@ -49,7 +49,7 @@ export default function Signup() {
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          We'll send you a magic link to sign in securely
+          We&apos;ll send you a magic link to sign in securely
         </p>
       </div>
 

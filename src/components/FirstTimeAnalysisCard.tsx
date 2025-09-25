@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -281,7 +281,7 @@ export default function FirstTimeAnalysisCard({
             {/* Note at the top */}
             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-xs text-amber-800 text-center">
-                <strong>Note:</strong> This is a preview of the detailed analysis you'll receive. Upload your business documents for personalized, AI-powered insights tailored to your specific venture.
+                <strong>Note:</strong> This is a preview of the detailed analysis you&apos;ll receive. Upload your business documents for personalized, AI-powered insights tailored to your specific venture.
               </p>
             </div>
 

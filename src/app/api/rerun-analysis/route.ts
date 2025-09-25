@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Get the latest submission for this venture
-    let { data: submission, error: subError } = await supabase
+    const { data: submission, error: subError } = await supabase
       .from('submissions')
       .select('id')
       .eq('venture_id', ventureId)
@@ -275,7 +275,7 @@ export async function POST(req: NextRequest) {
 
     // Create a new agent run with slight variations
     const variations = analysisVariations[dimension as keyof typeof analysisVariations];
-    let newOutputJson = { ...existingRun.output_json };
+    const newOutputJson = { ...existingRun.output_json };
 
     if (variations) {
       // Ensure we get a different variation than the current one

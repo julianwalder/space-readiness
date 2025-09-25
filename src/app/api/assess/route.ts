@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
     const job = await queue.add('run-assessment', { ventureId }, { removeOnComplete: true, attempts: 2 });
 
     return NextResponse.json({ ok: true, jobId: job.id });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message ?? 'unknown error' }, { status: 500 });
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : 'unknown error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

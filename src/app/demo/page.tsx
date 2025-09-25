@@ -6,7 +6,7 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Responsi
 
 type Score = { dimension: string; level: number; confidence: number };
 type Rec = { id: number; dimension: string; action: string; impact: string; eta_weeks: number|null };
-type Milestone = { id: number; label: string; target_levels_json: any; due_date: string };
+type Milestone = { id: number; label: string; target_levels_json: Record<string, unknown>; due_date: string };
 
 export default function Demo() {
   const [scores, setScores] = useState<Score[]>([]);
@@ -37,7 +37,7 @@ export default function Demo() {
           .eq('venture_id', venture.id);
 
         if (scoresData) {
-          setScores(scoresData.map((r: any) => ({
+          setScores(scoresData.map((r: { dimension: string; level: number; confidence?: number }) => ({
             dimension: r.dimension,
             level: r.level,
             confidence: Number(r.confidence ?? 0.5)
@@ -52,7 +52,7 @@ export default function Demo() {
           .order('created_at', { ascending: false });
 
         if (recsData) {
-          setRecs(recsData.map((r: any) => ({
+          setRecs(recsData.map((r: { id: number; dimension: string; action: string; impact: string; eta_weeks: number | null }) => ({
             id: r.id,
             dimension: r.dimension,
             action: r.action,

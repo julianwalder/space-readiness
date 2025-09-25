@@ -23,7 +23,7 @@ export default function DimensionsGrid() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<Dimension | null>(null);
   const [levelDescriptions, setLevelDescriptions] = useState<Record<Level, string>>({} as Record<Level, string>);
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
 
   const openDim = (d: Dimension) => { 
     setActive(d); 
@@ -58,7 +58,7 @@ export default function DimensionsGrid() {
     }
   }, [active, open]);
 
-  const LevelRows = ({ dim }: { dim: Dimension }) => {
+  const LevelRows = ({ dim: _dim }: { dim: Dimension }) => {
     const levels: Level[] = [1,2,3,4,5,6,7,8,9];
     
     

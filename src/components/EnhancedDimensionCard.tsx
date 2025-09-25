@@ -8,6 +8,7 @@ import FirstTimeAnalysisCard from './FirstTimeAnalysisCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { type Dimension } from '@/lib/rubric-service';
 
 type Score = { dimension: string; level: number; confidence: number };
 type AgentRun = {
@@ -102,7 +103,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
   useEffect(() => {
     loadAgentRun();
     checkForFiles();
-  }, [currentVenture?.id, dimension]);
+  }, [currentVenture?.id, dimension, checkForFiles, loadAgentRun]);
 
   const handleRerun = async () => {
     if (!currentVenture) return;
@@ -160,7 +161,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
     <div className="space-y-6">
       {/* Score Card - Always show, even with no data */}
       <DimensionScoreCard
-        dimension={dimension as any}
+        dimension={dimension as Dimension}
         scores={scores}
         title={title}
         description={description}
