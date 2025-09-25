@@ -8,6 +8,8 @@ interface Venture {
   stage?: string;
   profile_type?: string;
   description?: string;
+  user_id?: string;
+  org_id?: string;
   created_at: string;
   updated_at?: string;
 }

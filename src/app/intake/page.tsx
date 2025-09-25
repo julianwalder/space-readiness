@@ -72,6 +72,7 @@ export default function Intake() {
       const { error } = await supabase.from('ventures').insert({
         id: crypto.randomUUID(),
         org_id: null, // set later if you add orgs
+        user_id: user.id, // associate venture with the current user
         name: formData.venture_name.trim(),
         stage: formData.stage,
         profile_type: 'default',

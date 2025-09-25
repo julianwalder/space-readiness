@@ -68,7 +68,8 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         stage: stage || null,
         profile_type: profile_type || null,
-        description: description || null
+        description: description || null,
+        user_id: user.id // associate venture with the authenticated user
       }])
       .select()
       .single();
