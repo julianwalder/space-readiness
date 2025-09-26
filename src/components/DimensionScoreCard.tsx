@@ -112,11 +112,6 @@ export default function DimensionScoreCard({ dimension, scores, title, descripti
               })}
             </div>
             
-            {/* Level Labels */}
-            <div className="flex justify-between mt-2 text-xs text-gray-500">
-              <span>Level 1</span>
-              <span>Level 9</span>
-            </div>
           </div>
 
           {/* Current Level Details */}

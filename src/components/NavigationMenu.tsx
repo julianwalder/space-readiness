@@ -101,9 +101,9 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
           <Link
             href="/dashboard"
             className={cn(
-              "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
+              "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap relative",
               pathname === '/dashboard'
-                ? "bg-gray-900 text-white border border-gray-900"
+                ? "text-gray-900 font-semibold"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             )}
             title="Main dashboard overview"
@@ -114,6 +114,9 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
             </svg>
             <span className="sm:hidden">Dashboard</span>
             <span className="hidden sm:inline">Dashboard</span>
+            {pathname === '/dashboard' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full"></div>
+            )}
           </Link>
         </div>
         
@@ -131,9 +134,9 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
                     key={dimension.href}
                     href={dimension.href}
                     className={cn(
-                      "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0",
+                      "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 relative",
                       isActive
-                        ? "bg-gray-900 text-white border border-gray-900"
+                        ? "text-gray-900 font-semibold"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                     )}
                     title={dimension.description}
@@ -143,6 +146,9 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
                       {dimension.icon}
                       <span>{dimension.title}</span>
                     </div>
+                    {isActive && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full"></div>
+                    )}
                   </Link>
                 );
               })}
