@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import AppLayout from '@/components/AppLayout';
 
 export const metadata: Metadata = {
   title: 'Dashboard - Space Venture Readiness',
@@ -31,5 +32,5 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <AppLayout>{children}</AppLayout>;
 }
