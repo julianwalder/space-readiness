@@ -11,12 +11,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Space Venture Readiness',
     description: 'Multidimensional de-risking for space ventures.',
+    type: 'website',
+    url: 'https://space-readiness.vercel.app',
     images: [
       {
         url: '/api/og',
         width: 1200,
         height: 630,
         alt: 'Space Venture Readiness',
+        type: 'image/png',
       },
     ],
   },

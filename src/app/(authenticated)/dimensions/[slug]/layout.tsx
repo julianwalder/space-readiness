@@ -71,12 +71,15 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     openGraph: {
       title,
       description,
+      type: 'website',
+      url: `https://space-readiness.vercel.app/dimensions/${resolvedParams.slug}`,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(config.dimension)}&description=${encodeURIComponent(description)}&dimension=${encodeURIComponent(config.dimension)}`,
           width: 1200,
           height: 630,
           alt: `${config.dimension} - Space Venture Readiness`,
+          type: 'image/png',
         },
       ],
     },
