@@ -27,7 +27,7 @@ export default function AuthCodeError() {
             </div>
             <h3 className="mt-4 text-lg font-medium text-gray-900">Sign-in Failed</h3>
             <p className="mt-2 text-sm text-gray-600">
-              We couldn't complete your sign-in. This might be due to a network issue or the sign-in was cancelled.
+              We couldn&apos;t complete your sign-in. This might be due to a network issue or the sign-in was cancelled.
             </p>
             <div className="mt-6">
               <Link
