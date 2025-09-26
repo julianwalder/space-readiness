@@ -238,6 +238,50 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Recommendations */}
+        {Object.keys(grouped).length > 0 && (
+          <div className="mb-8">
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900">Recommendations</h2>
+                <p className="mt-1 text-sm text-gray-600">
+                  Actionable items to improve your readiness scores
+                </p>
+              </div>
+              <div className="p-6">
+                <div className="grid gap-4 md:grid-cols-2">
+                  {Object.entries(grouped).map(([dim, items]) => (
+                    <div key={dim} className="rounded-xl border border-gray-200 p-4">
+                      <div className="font-semibold text-gray-900 mb-3">{dim}</div>
+                      <ul className="space-y-2 text-sm">
+                        {items.map(i => (
+                          <li key={i.id} className="border border-gray-200 rounded-lg p-3">
+                            <div className="flex justify-between items-start">
+                              <span className="text-gray-700">{i.action}</span>
+                              <span className={`text-xs uppercase px-2 py-1 rounded ${
+                                i.impact === 'high' ? 'bg-red-100 text-red-800' :
+                                i.impact === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-green-100 text-green-800'
+                              }`}>
+                                {i.impact}
+                              </span>
+                            </div>
+                            {i.eta_weeks && (
+                              <div className="text-xs text-gray-500 mt-2">
+                                ETA: {i.eta_weeks} weeks
+                              </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Quick Actions */}
         <div className="mb-8">
           <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
@@ -324,32 +368,34 @@ export default function Dashboard() {
               </div>
               <div className="space-y-3">
                 {uploadedFiles.slice(0, 3).map((file) => (
-                  <div key={file.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="flex-shrink-0 h-8 w-8 rounded bg-blue-100 flex items-center justify-center">
-                        <span className="text-xs font-medium text-blue-600">
-                          {file.fileName.split('.').pop()?.toUpperCase().slice(0, 3)}
+                  <div key={file.id} className="overflow-x-auto scrollbar-hide">
+                    <div className="flex items-center p-3 bg-gray-50 rounded-lg min-w-max">
+                      <div className="flex items-center space-x-3 flex-shrink-0">
+                        <div className="flex-shrink-0 h-8 w-8 rounded bg-blue-100 flex items-center justify-center">
+                          <span className="text-xs font-medium text-blue-600">
+                            {file.fileName.split('.').pop()?.toUpperCase().slice(0, 3)}
+                          </span>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <div className="text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {file.fileName}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(file.uploadedAt).toLocaleDateString()} • {formatFileSize(file.size)}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          file.submissionStatus === 'completed' 
+                            ? 'bg-green-100 text-green-800'
+                            : file.submissionStatus === 'processing'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {file.submissionStatus}
                         </span>
                       </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-900 truncate max-w-xs">
-                          {file.fileName}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(file.uploadedAt).toLocaleDateString()} • {formatFileSize(file.size)}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        file.submissionStatus === 'completed' 
-                          ? 'bg-green-100 text-green-800'
-                          : file.submissionStatus === 'processing'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {file.submissionStatus}
-                      </span>
                     </div>
                   </div>
                 ))}
@@ -360,50 +406,6 @@ export default function Dashboard() {
                     </span>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Recommendations */}
-        {Object.keys(grouped).length > 0 && (
-          <div className="mt-8">
-            <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Recommendations</h2>
-                <p className="mt-1 text-sm text-gray-600">
-                  Actionable items to improve your readiness scores
-                </p>
-              </div>
-              <div className="p-6">
-                <div className="grid gap-4 md:grid-cols-2">
-                  {Object.entries(grouped).map(([dim, items]) => (
-                    <div key={dim} className="rounded-xl border border-gray-200 p-4">
-                      <div className="font-semibold text-gray-900 mb-3">{dim}</div>
-                      <ul className="space-y-2 text-sm">
-                        {items.map(i => (
-                          <li key={i.id} className="border border-gray-200 rounded-lg p-3">
-                            <div className="flex justify-between items-start">
-                              <span className="text-gray-700">{i.action}</span>
-                              <span className={`text-xs uppercase px-2 py-1 rounded ${
-                                i.impact === 'high' ? 'bg-red-100 text-red-800' :
-                                i.impact === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-green-100 text-green-800'
-                              }`}>
-                                {i.impact}
-                              </span>
-                            </div>
-                            {i.eta_weeks && (
-                              <div className="text-xs text-gray-500 mt-2">
-                                ETA: {i.eta_weeks} weeks
-                              </div>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>

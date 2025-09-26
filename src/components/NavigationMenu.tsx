@@ -94,47 +94,65 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
   const pathname = usePathname();
 
   return (
-    <nav className={cn("flex space-x-1", className)}>
-      {/* Dashboard Link */}
-      <Link
-        href="/dashboard"
-        className={cn(
-          "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-          pathname === '/dashboard'
-            ? "bg-gray-900 text-white border border-gray-900"
-            : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-        )}
-        title="Main dashboard overview"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
-        </svg>
-        <span className="hidden sm:inline">Dashboard</span>
-      </Link>
-      
-      {/* Separator */}
-      <div className="w-px h-6 bg-gray-300 mx-2 my-auto"></div>
-      
-      {DIMENSIONS.map((dimension) => {
-        const isActive = pathname === dimension.href;
-        return (
+    <div className="w-full max-w-screen overflow-hidden">
+      <nav className={cn("flex space-x-1", className)}>
+        {/* Dashboard Link - Fixed on the left */}
+        <div className="flex-shrink-0">
           <Link
-            key={dimension.href}
-            href={dimension.href}
+            href="/dashboard"
             className={cn(
-              "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-              isActive
+              "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
+              pathname === '/dashboard'
                 ? "bg-gray-900 text-white border border-gray-900"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             )}
-            title={dimension.description}
+            title="Main dashboard overview"
           >
-            {dimension.icon}
-            <span className="hidden sm:inline">{dimension.title}</span>
+            <svg className="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
+            </svg>
+            <span className="sm:hidden">Dashboard</span>
+            <span className="hidden sm:inline">Dashboard</span>
           </Link>
-        );
-      })}
-    </nav>
+        </div>
+        
+        {/* Separator */}
+        <div className="w-px h-6 bg-gray-300 mx-2 my-auto flex-shrink-0"></div>
+        
+        {/* Dimensions - Scrollable container with fixed gradient hint */}
+        <div className="flex-1 relative overflow-hidden">
+          <div className="overflow-x-auto scrollbar-hide h-full">
+            <div className="flex space-x-1 min-w-max">
+              {DIMENSIONS.map((dimension) => {
+                const isActive = pathname === dimension.href;
+                return (
+                  <Link
+                    key={dimension.href}
+                    href={dimension.href}
+                    className={cn(
+                      "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0",
+                      isActive
+                        ? "bg-gray-900 text-white border border-gray-900"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                    )}
+                    title={dimension.description}
+                  >
+                    <span className="sm:hidden">{dimension.title}</span>
+                    <div className="hidden sm:flex items-center space-x-2">
+                      {dimension.icon}
+                      <span>{dimension.title}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          
+          {/* Fixed gradient hint for scroll functionality */}
+          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+        </div>
+      </nav>
+    </div>
   );
 }

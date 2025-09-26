@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useVenture } from '@/contexts/VentureContext';
 import NavigationMenu from '@/components/NavigationMenu';
 import Link from 'next/link';
-import LogoutButton from '@/components/LogoutButton';
+import UserMenu from '@/components/UserMenu';
 import VentureSelector from '@/components/VentureSelector';
 
 interface AppLayoutProps {
@@ -38,7 +38,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-6">
               <div className="flex-shrink-0">
-                <Link href="/dashboard" className="text-xl font-bold text-gray-900">
+                <Link href="/dashboard" className="text-xl font-bold text-gray-900 hidden sm:block">
                   Space Readiness
                 </Link>
               </div>
@@ -56,9 +56,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 }}
               />
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{userEmail}</span>
-              <LogoutButton />
+            <div className="flex items-center">
+              <UserMenu userEmail={userEmail} />
             </div>
           </div>
           

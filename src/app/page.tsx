@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import RadarChartDemo from '@/components/RadarChartDemo';
 import DimensionsGrid from '@/components/DimensionsGrid';
+import GoogleLoginButton from '@/components/GoogleLoginButton';
 
 export default function Landing() {
   return (
@@ -15,6 +16,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <GoogleLoginButton />
               <Link 
                 href="/signup" 
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
@@ -38,9 +40,10 @@ export default function Landing() {
                 Upload your deck and evidence. Our agentic AI scores <strong>8 readiness dimensions</strong> (1–9),
                 flags bottlenecks, and generates a clear roadmap to your next funding milestone.
               </p>
-              <div className="mt-8 flex gap-4">
-                <Link href="/signup" className="rounded-xl bg-blue-600 px-6 py-3 text-white font-medium">Get Started</Link>
-                <Link href="#dimensions" className="rounded-xl border px-6 py-3 font-medium">See dimensions</Link>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <GoogleLoginButton />
+                <Link href="/signup" className="rounded-xl bg-blue-600 px-6 py-3 text-white font-medium text-center">Get Started</Link>
+                <Link href="#dimensions" className="rounded-xl border px-6 py-3 font-medium text-center">See dimensions</Link>
               </div>
               <p className="mt-3 text-sm text-gray-500">Built on KTH Innovation Readiness Level + System Integration Readiness.</p>
             </div>
