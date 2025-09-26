@@ -15,8 +15,7 @@ export default function Landing() {
                 <span className="text-xl font-bold text-gray-900">Space Readiness</span>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <GoogleLoginButton />
+            <div className="flex items-center">
               <Link 
                 href="/signup" 
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
@@ -41,7 +40,6 @@ export default function Landing() {
                 flags bottlenecks, and generates a clear roadmap to your next funding milestone.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <GoogleLoginButton />
                 <Link href="/signup" className="rounded-xl bg-blue-600 px-6 py-3 text-white font-medium text-center">Get Started</Link>
                 <Link href="#dimensions" className="rounded-xl border px-6 py-3 font-medium text-center">See dimensions</Link>
               </div>
