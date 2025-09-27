@@ -152,7 +152,7 @@ export default function PrivacyPolicy() {
               <li><strong>Restriction:</strong> Request restriction of processing in certain circumstances</li>
             </ul>
             <p className="text-gray-700">
-              To exercise these rights, please contact us using the information provided in the "Contact Us" section below.
+              To exercise these rights, please contact us using the information provided in the &ldquo;Contact Us&rdquo; section below.
             </p>
           </section>
 

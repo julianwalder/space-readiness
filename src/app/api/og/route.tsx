@@ -1,5 +1,6 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 export const runtime = 'edge';
 
@@ -7,11 +8,24 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     
-    // Get dynamic parameters from URL
-    const title = searchParams.get('title') || 'Space Readiness';
-    const description = searchParams.get('description') || 'Multidimensional de-risking for space ventures';
-    const venture = searchParams.get('venture') || null;
-    const dimension = searchParams.get('dimension') || null;
+    // Get total recommendations count from database
+    let recommendationsCount = 0;
+    try {
+      const supabase = createClient(
+        process.env.SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+      
+      const { count } = await supabase
+        .from('recommendations')
+        .select('*', { count: 'exact', head: true });
+      
+      recommendationsCount = count || 0;
+    } catch (error) {
+      console.error('Error fetching recommendations count:', error);
+      // Fallback to a reasonable number if database query fails
+      recommendationsCount = 42;
+    }
 
     return new ImageResponse(
       (
@@ -36,7 +50,7 @@ export async function GET(request: NextRequest) {
 Space Ventures
 
 8 dimensions
-${Math.floor(Math.random() * 50) + 10} recommendations to date`}
+${recommendationsCount} recommendations to date`}
         </div>
       ),
       {
