@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import RadarChartDemo from '@/components/RadarChartDemo';
 import DimensionsGrid from '@/components/DimensionsGrid';
-import GoogleLoginButton from '@/components/GoogleLoginButton';
 
 export default function Landing() {
   return (

@@ -35,9 +35,9 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Acceptance of Terms</h2>
             <p className="text-gray-700 mb-4">
-              These Terms of Service ("Terms") constitute a legally binding agreement between you 
-              ("User" or "you") and Swiss Aerospace Ventures GmbH ("Company," "we," "our," or "us") 
-              regarding your use of the Space Readiness platform (the "Service").
+              These Terms of Service (&ldquo;Terms&rdquo;) constitute a legally binding agreement between you 
+              (&ldquo;User&rdquo; or &ldquo;you&rdquo;) and Swiss Aerospace Ventures GmbH (&ldquo;Company,&rdquo; &ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) 
+              regarding your use of the Space Readiness platform (the &ldquo;Service&rdquo;).
             </p>
             <p className="text-gray-700">
               By accessing or using our Service, you agree to be bound by these Terms. If you do not 
@@ -116,7 +116,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-medium text-gray-900 mb-3">5.2 Your Content</h3>
             <p className="text-gray-700 mb-4">
-              You retain ownership of all content you upload to the Service ("User Content"). By 
+              You retain ownership of all content you upload to the Service (&ldquo;User Content&rdquo;). By 
               uploading User Content, you grant us a non-exclusive, worldwide, royalty-free license 
               to use, modify, and process your User Content solely for the purpose of providing the Service.
             </p>
@@ -152,7 +152,7 @@ export default function TermsOfService() {
             
             <h3 className="text-xl font-medium text-gray-900 mb-3">8.1 Service Disclaimer</h3>
             <p className="text-gray-700 mb-4">
-              The Service is provided on an "AS IS" and "AS AVAILABLE" basis. We make no warranties, 
+              The Service is provided on an &ldquo;AS IS&rdquo; and &ldquo;AS AVAILABLE&rdquo; basis. We make no warranties, 
               expressed or implied, and hereby disclaim all other warranties including, without limitation, 
               implied warranties or conditions of merchantability, fitness for a particular purpose, 
               or non-infringement of intellectual property or other violation of rights.
@@ -181,7 +181,7 @@ export default function TermsOfService() {
               You agree to defend, indemnify, and hold harmless Swiss Aerospace Ventures GmbH and 
               its licensee and licensors, and their employees, contractors, agents, officers and 
               directors, from and against any and all claims, damages, obligations, losses, liabilities, 
-              costs or debt, and expenses (including but not limited to attorney's fees).
+              costs or debt, and expenses (including but not limited to attorney&apos;s fees).
             </p>
           </section>
 

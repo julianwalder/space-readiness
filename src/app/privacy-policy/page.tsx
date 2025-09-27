@@ -35,8 +35,8 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
             <p className="text-gray-700 mb-4">
-              Swiss Aerospace Ventures GmbH ("we," "our," or "us") operates the Space Readiness platform 
-              (the "Service"). This Privacy Policy informs you about our policies regarding the collection, 
+              Swiss Aerospace Ventures GmbH (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) operates the Space Readiness platform 
+              (the &ldquo;Service&rdquo;). This Privacy Policy informs you about our policies regarding the collection, 
               use, and disclosure of personal information when you use our Service.
             </p>
             <p className="text-gray-700">
@@ -177,7 +177,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">11. Changes to This Privacy Policy</h2>
             <p className="text-gray-700">
               We may update this Privacy Policy from time to time. We will notify you of any changes 
-              by posting the new Privacy Policy on this page and updating the "Last updated" date. 
+              by posting the new Privacy Policy on this page and updating the &ldquo;Last updated&rdquo; date. 
               We encourage you to review this Privacy Policy periodically for any changes.
             </p>
           </section>
