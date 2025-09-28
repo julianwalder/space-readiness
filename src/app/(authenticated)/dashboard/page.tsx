@@ -38,7 +38,9 @@ export default function Dashboard() {
   // Load data when current venture changes
   useEffect(() => {
     console.log('Dashboard - currentVenture changed:', currentVenture);
+    console.log('Dashboard - ventures:', ventures);
     if (!currentVenture) {
+      console.log('Dashboard - No current venture, setting loading to false');
       setScores([]);
       setRecs([]);
       setUploadedFiles([]);
@@ -55,24 +57,15 @@ export default function Dashboard() {
         const { data: s } = await supabase.from('scores').select('*').eq('venture_id', vid);
         setScores((s ?? []).map((r: { dimension: string; level: number; confidence?: number }) => ({ dimension: r.dimension, level: r.level, confidence: Number(r.confidence ?? 0.5) })));
         
-        // Get latest recommendations from agent runs
-        const { data: latestSubmission } = await supabase
-          .from('submissions')
-          .select('id')
-          .eq('venture_id', vid)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-        
-        console.log('Dashboard - latestSubmission:', latestSubmission);
-        
+        // Get latest agent runs directly for this venture
         const { data: agentRuns } = await supabase
           .from('agent_runs')
           .select('*')
-          .eq('submission_id', latestSubmission?.id)
+          .eq('venture_id', vid)
           .order('created_at', { ascending: false });
         
         console.log('Dashboard - agentRuns:', agentRuns);
+        console.log('Dashboard - agentRuns count:', agentRuns?.length || 0);
         
         // Extract recommendations from agent runs
         const allRecs: Rec[] = [];
@@ -129,7 +122,7 @@ export default function Dashboard() {
     const ch = supabase
       .channel('dash')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'scores', filter: `venture_id=eq.${currentVenture.id}` }, loadData)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'agent_runs' }, loadData)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'agent_runs', filter: `venture_id=eq.${currentVenture.id}` }, loadData)
       .subscribe();
 
     return () => { supabase.removeChannel(ch); };
