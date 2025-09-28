@@ -417,7 +417,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                 </div>
 
                 {/* Previous Recommendations */}
-                {showPreviousRuns && agentRuns.slice(1).map((runGroup, groupIndex) => (
+                {showPreviousRuns && agentRuns.slice(1).map((runGroup, _groupIndex) => (
                   <div key={runGroup.run.id} className="bg-white border border-gray-200 rounded-lg p-4 opacity-75">
                     <div className="flex items-center space-x-2 mb-3">
                       <Badge variant="secondary" className="bg-gray-100 text-gray-800">

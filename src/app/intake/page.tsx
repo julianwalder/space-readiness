@@ -68,7 +68,7 @@ type IntakeData = {
 
 export default function Intake() {
   const params = useParams();
-  const router = useRouter();
+  const _router = useRouter();
   const { currentVenture, refreshVentures } = useVenture();
   const ventureId = params.id as string || currentVenture?.id;
   const isEditing = !!ventureId;
@@ -83,7 +83,7 @@ export default function Intake() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [stages, setStages] = useState<Stage[]>([]);
   const [currentStep, setCurrentStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(isEditing);
+  const [_isLoading, setIsLoading] = useState(isEditing);
   const totalSteps = 6;
 
   // Load stages and venture data on component mount
@@ -252,7 +252,7 @@ export default function Intake() {
       }
     }
     loadData();
-  }, [isEditing, ventureId]);
+  }, [isEditing, ventureId, currentVenture]);
 
   // Re-load form data when currentVenture changes (after save)
   useEffect(() => {
@@ -319,7 +319,7 @@ export default function Intake() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    let processedValue: any = value;
+    let processedValue: string | number | boolean | string[] | undefined = value;
     
     // Handle different input types
     if (type === 'checkbox') {
@@ -343,6 +343,13 @@ export default function Intake() {
     setFormData(prev => ({
       ...prev,
       [name]: processedValue
+    }));
+  };
+
+  const handleSelectChange = (name: string, value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
     }));
   };
 
@@ -563,7 +570,7 @@ export default function Intake() {
               <div className="mt-1">
                       <Select
                   value={formData.stage}
-                        onValueChange={(value) => handleInputChange({ target: { name: 'stage', value } } as any)}
+                        onValueChange={(value) => handleSelectChange('stage', value)}
                 >
                         <SelectTrigger>
                           <SelectValue placeholder="Select funding stage" />
@@ -612,7 +619,7 @@ export default function Intake() {
                     <div className="mt-1">
                       <Select
                         value={formData.business_model || ''}
-                        onValueChange={(value) => handleInputChange({ target: { name: 'business_model', value } } as any)}
+                        onValueChange={(value) => handleSelectChange('business_model', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select business model" />
@@ -635,7 +642,7 @@ export default function Intake() {
                     <div className="mt-1">
                       <Select
                         value={formData.revenue_model || ''}
-                        onValueChange={(value) => handleInputChange({ target: { name: 'revenue_model', value } } as any)}
+                        onValueChange={(value) => handleSelectChange('revenue_model', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select revenue model" />
@@ -734,7 +741,7 @@ export default function Intake() {
                     <div className="mt-1">
                       <Select
                         value={formData.industry_experience || ''}
-                        onValueChange={(value) => handleInputChange({ target: { name: 'industry_experience', value } } as any)}
+                        onValueChange={(value) => handleSelectChange('industry_experience', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select industry experience" />
@@ -847,7 +854,7 @@ export default function Intake() {
                     <div className="mt-1">
                       <Select
                         value={formData.product_type || ''}
-                        onValueChange={(value) => handleInputChange({ target: { name: 'product_type', value } } as any)}
+                        onValueChange={(value) => handleSelectChange('product_type', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select product type" />
@@ -870,7 +877,7 @@ export default function Intake() {
                     <div className="mt-1">
                       <Select
                         value={formData.technology_readiness_level?.toString() || ''}
-                        onValueChange={(value) => handleInputChange({ target: { name: 'technology_readiness_level', value: parseInt(value) } } as any)}
+                        onValueChange={(value) => handleSelectChange('technology_readiness_level', parseInt(value))}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select TRL" />
@@ -1137,7 +1144,7 @@ export default function Intake() {
                   <div className="mt-1">
                     <Select
                       value={formData.supply_chain_status || ''}
-                      onValueChange={(value) => handleInputChange({ target: { name: 'supply_chain_status', value } } as any)}
+                      onValueChange={(value) => handleSelectChange('supply_chain_status', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select supply chain status" />

@@ -127,7 +127,7 @@ export async function getDocumentChunks(
 export async function generateEvidenceFromDocuments(
   ventureId: string,
   dimension: string,
-  context: any
+  context: Record<string, unknown>
 ): Promise<string[]> {
   try {
     const chunks = await getDocumentChunks(ventureId, dimension, 5);
@@ -172,7 +172,7 @@ export async function generateEvidenceFromDocuments(
 export async function generateRecommendationsFromDocuments(
   ventureId: string,
   dimension: string,
-  context: any
+  context: Record<string, unknown>
 ): Promise<Array<{ action: string; impact: 'low'|'medium'|'high'; eta_weeks?: number; dependency?: string }>> {
   try {
     const chunks = await getDocumentChunks(ventureId, dimension, 3);

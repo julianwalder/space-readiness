@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function processFile(file: any, ventureId: string) {
+async function processFile(file: { path: string; mime: string }, ventureId: string) {
   console.log(`Processing file: ${file.path} (${file.mime})`);
 
   // Download file from Supabase Storage
@@ -168,7 +168,7 @@ async function extractTextFromPDF(fileData: Blob): Promise<string> {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
     const pageText = textContent.items
-      .map((item: any) => item.str)
+      .map((item: { str: string }) => item.str)
       .join(' ');
     fullText += pageText + '\n';
   }

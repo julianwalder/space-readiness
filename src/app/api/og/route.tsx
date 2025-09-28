@@ -7,6 +7,8 @@ export const runtime = 'edge';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+    const title = searchParams.get('title') || 'Space Venture Readiness';
+    const description = searchParams.get('description') || 'Track your space venture\'s readiness across 8 key dimensions';
     
     // Get total recommendations count from database
     let recommendationsCount = 0;

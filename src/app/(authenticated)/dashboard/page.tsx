@@ -74,7 +74,7 @@ export default function Dashboard() {
             console.log('Dashboard - run.output_json:', run.output_json);
             if (run.output_json?.recommendations) {
               console.log('Dashboard - recommendations found:', run.output_json.recommendations);
-              run.output_json.recommendations.forEach((rec: any) => {
+              run.output_json.recommendations.forEach((rec: { action: string; impact: string; eta_weeks: number }) => {
                 allRecs.push({
                   id: run.id,
                   dimension: run.dimension,
@@ -126,7 +126,7 @@ export default function Dashboard() {
       .subscribe();
 
     return () => { supabase.removeChannel(ch); };
-  }, [currentVenture]);
+  }, [currentVenture, ventures]);
 
   // Create radar data showing all dimensions, with real scores where available
   const radarData = DIMENSIONS.map(dimension => {
