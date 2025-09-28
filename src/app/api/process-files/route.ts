@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function processFile(file: { path: string; mime: string }, ventureId: string) {
+async function processFile(file: { id: string; path: string; mime: string }, _ventureId: string) {
   console.log(`Processing file: ${file.path} (${file.mime})`);
 
   // Download file from Supabase Storage
