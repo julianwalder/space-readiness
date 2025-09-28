@@ -53,8 +53,39 @@ export default function Dashboard() {
         const { data: s } = await supabase.from('scores').select('*').eq('venture_id', vid);
         setScores((s ?? []).map((r: { dimension: string; level: number; confidence?: number }) => ({ dimension: r.dimension, level: r.level, confidence: Number(r.confidence ?? 0.5) })));
         
-        const { data: rr } = await supabase.from('recommendations').select('*').eq('venture_id', vid).order('created_at', { ascending: false }).limit(50);
-        setRecs((rr ?? []).map((r: { id: number; dimension: string; action: string; impact: string; eta_weeks: number | null }) => ({ id: r.id, dimension: r.dimension, action: r.action, impact: r.impact, eta_weeks: r.eta_weeks })));
+        // Get latest recommendations from agent runs
+        const { data: latestSubmission } = await supabase
+          .from('submissions')
+          .select('id')
+          .eq('venture_id', vid)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+        
+        const { data: agentRuns } = await supabase
+          .from('agent_runs')
+          .select('*')
+          .eq('submission_id', latestSubmission?.id)
+          .order('created_at', { ascending: false });
+        
+        // Extract recommendations from agent runs
+        const allRecs: Rec[] = [];
+        if (agentRuns) {
+          agentRuns.forEach(run => {
+            if (run.output_json?.recommendations) {
+              run.output_json.recommendations.forEach((rec: any) => {
+                allRecs.push({
+                  id: run.id,
+                  dimension: run.dimension,
+                  action: rec.action,
+                  impact: rec.impact,
+                  eta_weeks: rec.eta_weeks
+                });
+              });
+            }
+          });
+        }
+        setRecs(allRecs);
         
         // Load uploaded files
         try {
@@ -89,7 +120,7 @@ export default function Dashboard() {
     const ch = supabase
       .channel('dash')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'scores', filter: `venture_id=eq.${currentVenture.id}` }, loadData)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recommendations', filter: `venture_id=eq.${currentVenture.id}` }, loadData)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'agent_runs' }, loadData)
       .subscribe();
 
     return () => { supabase.removeChannel(ch); };
@@ -107,6 +138,9 @@ export default function Dashboard() {
   // group recommendations by dimension
   const grouped: Record<string, Rec[]> = {};
   recs.forEach(r => { (grouped[r.dimension] ??= []).push(r); });
+  
+  console.log('Dashboard - recs count:', recs.length);
+  console.log('Dashboard - grouped keys:', Object.keys(grouped));
 
   if (isLoading) {
     return (
@@ -288,16 +322,16 @@ export default function Dashboard() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Get Started</h2>
             <div className="grid gap-4 md:grid-cols-3">
               <Link 
-                href="/assessment" 
+                href="/intake" 
                 className="flex flex-col items-center rounded-lg border-2 border-blue-200 bg-blue-50 px-6 py-6 text-center hover:bg-blue-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-700 transition-colors">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Start Assessment</h3>
-                <p className="text-sm text-gray-600">Complete your readiness evaluation</p>
+                <h3 className="font-semibold text-gray-900 mb-1">Complete Intake</h3>
+                <p className="text-sm text-gray-600">Provide venture information</p>
               </Link>
               
               <Link 
@@ -314,16 +348,16 @@ export default function Dashboard() {
               </Link>
               
               <Link 
-                href="/intake" 
+                href="/assessment" 
                 className="flex flex-col items-center rounded-lg border border-gray-200 px-6 py-6 text-center hover:bg-gray-50 transition-colors group"
               >
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
                   <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Complete Intake</h3>
-                <p className="text-sm text-gray-600">Provide venture information</p>
+                <h3 className="font-semibold text-gray-900 mb-1">Start Assessment</h3>
+                <p className="text-sm text-gray-600">Complete your readiness evaluation</p>
               </Link>
             </div>
             

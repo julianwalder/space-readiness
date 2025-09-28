@@ -12,6 +12,57 @@ interface Venture {
   org_id?: string;
   created_at: string;
   updated_at?: string;
+  
+  // Business & Market Fields
+  business_model?: 'saas' | 'hardware' | 'services' | 'marketplace' | 'other';
+  target_market?: string;
+  revenue_model?: 'subscription' | 'one_time' | 'usage_based' | 'licensing' | 'other';
+  current_revenue?: number;
+  customer_count?: number;
+  has_paying_customers?: boolean;
+  funding_raised?: number;
+  funding_rounds?: number;
+  months_to_runway?: number;
+  
+  // Team & Organization Fields
+  team_size?: number;
+  founders_count?: number;
+  has_technical_cofounder?: boolean;
+  has_business_cofounder?: boolean;
+  team_experience_years?: number;
+  previous_startups?: number;
+  industry_experience?: 'space' | 'aerospace' | 'defense' | 'tech' | 'other';
+  key_team_members?: string;
+  
+  // Technology & Product Fields
+  product_type?: 'satellite' | 'ground_system' | 'software' | 'hardware' | 'service';
+  technology_readiness_level?: number;
+  has_prototype?: boolean;
+  has_patents?: boolean;
+  patent_count?: number;
+  regulatory_requirements?: string[];
+  certification_status?: 'none' | 'in_progress' | 'completed';
+  
+  // Market & Customer Fields
+  target_customers?: string;
+  customer_segments?: string[];
+  market_size_estimate?: number;
+  competitive_advantage?: string;
+  has_competitors?: boolean;
+  competitor_names?: string;
+  customer_validation_method?: 'interviews' | 'surveys' | 'pilots' | 'none';
+  letters_of_intent?: number;
+  pilot_customers?: number;
+  
+  // Operational Fields
+  company_age_months?: number;
+  location?: string;
+  timezone?: string;
+  has_office?: boolean;
+  remote_team?: boolean;
+  key_partnerships?: string;
+  supply_chain_status?: 'local' | 'international' | 'mixed';
+  manufacturing_approach?: 'in_house' | 'outsourced' | 'hybrid';
 }
 
 interface VentureContextType {

@@ -46,7 +46,49 @@ async function processJob(job: Job) {
 
   if (subErr && subErr.code !== 'PGRST116') throw subErr; // PGRST116 is "not found"
 
-  const agentOutputs = await runAllAgents({ stage: venture?.stage });
+  const agentOutputs = await runAllAgents({
+    ventureId: ventureId,
+    stage: venture?.stage,
+    // Technology fields
+    technology_readiness_level: venture?.technology_readiness_level,
+    has_prototype: venture?.has_prototype,
+    has_patents: venture?.has_patents,
+    patent_count: venture?.patent_count,
+    regulatory_requirements: venture?.regulatory_requirements,
+    certification_status: venture?.certification_status,
+    product_type: venture?.product_type,
+    // Market fields
+    target_market: venture?.target_market,
+    target_customers: venture?.target_customers,
+    customer_segments: venture?.customer_segments,
+    market_size_estimate: venture?.market_size_estimate,
+    letters_of_intent: venture?.letters_of_intent,
+    pilot_customers: venture?.pilot_customers,
+    customer_validation_method: venture?.customer_validation_method,
+    has_competitors: venture?.has_competitors,
+    competitive_advantage: venture?.competitive_advantage,
+    // Business fields
+    business_model: venture?.business_model,
+    revenue_model: venture?.revenue_model,
+    current_revenue: venture?.current_revenue,
+    customer_count: venture?.customer_count,
+    has_paying_customers: venture?.has_paying_customers,
+    funding_raised: venture?.funding_raised,
+    funding_rounds: venture?.funding_rounds,
+    months_to_runway: venture?.months_to_runway,
+    // Team fields
+    team_size: venture?.team_size,
+    founders_count: venture?.founders_count,
+    has_technical_cofounder: venture?.has_technical_cofounder,
+    has_business_cofounder: venture?.has_business_cofounder,
+    team_experience_years: venture?.team_experience_years,
+    previous_startups: venture?.previous_startups,
+    industry_experience: venture?.industry_experience,
+    key_team_members: venture?.key_team_members,
+    // Operational fields
+    company_age_months: venture?.company_age_months,
+    key_partnerships: venture?.key_partnerships
+  });
   const now = new Date().toISOString();
 
   // Store agent runs with evidence and metadata

@@ -6,7 +6,6 @@ import { useVenture } from '@/contexts/VentureContext';
 import EnhancedDimensionCard from '@/components/EnhancedDimensionCard';
 
 type Score = { dimension: string; level: number; confidence: number };
-type Rec = { id: number; dimension: string; action: string; impact: string; eta_weeks: number|null };
 
 // Dimension configuration mapping
 const DIMENSION_CONFIG = {
@@ -69,7 +68,6 @@ interface PageProps {
 export default function DimensionPage({ params }: PageProps) {
   const { currentVenture } = useVenture();
   const [scores, setScores] = useState<Score[]>([]);
-  const [recs, setRecs] = useState<Rec[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [resolvedParams, setResolvedParams] = useState<{ slug: string } | null>(null);
@@ -89,7 +87,6 @@ export default function DimensionPage({ params }: PageProps) {
   useEffect(() => {
     if (!currentVenture || !config) {
       setScores([]);
-      setRecs([]);
       setIsLoading(false);
       return;
     }
@@ -111,22 +108,6 @@ export default function DimensionPage({ params }: PageProps) {
           confidence: Number(r.confidence ?? 0.5) 
         })));
         
-        const { data: rr } = await supabase
-          .from('recommendations')
-          .select('*')
-          .eq('venture_id', vid)
-          .eq('dimension', config.dimension)
-          .order('created_at', { ascending: false })
-          .limit(20);
-        
-        setRecs((rr ?? []).map((r: { id: number; dimension: string; action: string; impact: string; eta_weeks: number | null }) => ({ 
-          id: r.id, 
-          dimension: r.dimension, 
-          action: r.action, 
-          impact: r.impact, 
-          eta_weeks: r.eta_weeks 
-        })));
-        
         setError(null);
       } catch (err) {
         console.error('Error loading venture data:', err);
@@ -144,12 +125,6 @@ export default function DimensionPage({ params }: PageProps) {
         event: '*', 
         schema: 'public', 
         table: 'scores', 
-        filter: `venture_id=eq.${currentVenture.id}` 
-      }, loadData)
-      .on('postgres_changes', { 
-        event: 'INSERT', 
-        schema: 'public', 
-        table: 'recommendations', 
         filter: `venture_id=eq.${currentVenture.id}` 
       }, loadData)
       .subscribe();
@@ -222,41 +197,6 @@ export default function DimensionPage({ params }: PageProps) {
         description={config.description}
       />
 
-      {recs.length > 0 && (
-        <div className="mt-8">
-          <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">{config.dimension} Recommendations</h2>
-              <p className="mt-1 text-sm text-gray-600">
-                Actionable items to improve your {config.dimension.toLowerCase()} readiness
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                {recs.map((rec) => (
-                  <div key={rec.id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-gray-700 font-medium">{rec.action}</span>
-                      <span className={`text-xs uppercase px-2 py-1 rounded ${
-                        rec.impact === 'high' ? 'bg-red-100 text-red-800' :
-                        rec.impact === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        {rec.impact}
-                      </span>
-                    </div>
-                    {rec.eta_weeks && (
-                      <div className="text-xs text-gray-500">
-                        ETA: {rec.eta_weeks} weeks
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

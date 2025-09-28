@@ -34,6 +34,11 @@ type AgentRun = {
   created_at: string;
 };
 
+type AgentRunGroup = {
+  run: AgentRun;
+  isLatest: boolean;
+};
+
 interface EnhancedDimensionCardProps {
   dimension: string;
   scores: Score[];
@@ -44,10 +49,12 @@ interface EnhancedDimensionCardProps {
 export default function EnhancedDimensionCard({ dimension, scores, title, description }: EnhancedDimensionCardProps) {
   const { currentVenture } = useVenture();
   const [agentRun, setAgentRun] = useState<AgentRun | null>(null);
+  const [agentRuns, setAgentRuns] = useState<AgentRunGroup[]>([]);
   const [isLoadingRun, setIsLoadingRun] = useState(false);
   const [isRerunning, setIsRerunning] = useState(false);
   const [message, setMessage] = useState('');
   const [hasFiles, setHasFiles] = useState(false);
+  const [showPreviousRuns, setShowPreviousRuns] = useState(false);
 
   // Load the latest agent run for this dimension and venture
   const loadAgentRun = useCallback(async () => {
@@ -57,18 +64,37 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
     try {
       console.log('Loading agent run for venture:', currentVenture.id, 'dimension:', dimension);
       
-      // Use API endpoint to fetch agent run data
-      const response = await fetch(`/api/agent-runs/${currentVenture.id}/${encodeURIComponent(dimension)}`);
+      // Use API endpoint to fetch agent run data with cache busting
+      const response = await fetch(`/api/agent-runs/${currentVenture.id}/${encodeURIComponent(dimension)}?t=${Date.now()}`);
       
       if (response.ok) {
         const data = await response.json();
         console.log('Loaded agent run:', data);
+        console.log('Agent run created_at:', data.created_at);
+        console.log('Agent run created_at parsed:', new Date(data.created_at));
         setAgentRun(data);
       } else if (response.status === 404) {
         console.log('No agent run found for dimension:', dimension, 'venture:', currentVenture.id);
         setAgentRun(null);
       } else {
         console.error('Error loading agent run:', response.status, await response.text());
+      }
+
+      // Fetch all agent runs for this dimension to show previous recommendations
+      const allRunsResponse = await fetch(`/api/agent-runs/${currentVenture.id}/${encodeURIComponent(dimension)}/all?t=${Date.now()}`);
+      if (allRunsResponse.ok) {
+        const allRunsData = await allRunsResponse.json();
+        console.log('All agent runs received:', allRunsData);
+        
+        // Group runs with latest flag
+        const groupedRuns: AgentRunGroup[] = allRunsData.map((run: AgentRun, index: number) => ({
+          run,
+          isLatest: index === 0
+        }));
+        setAgentRuns(groupedRuns);
+      } else {
+        console.error('Failed to load all agent runs:', allRunsResponse.status);
+        setAgentRuns([]);
       }
     } catch (err) {
       console.error('Error loading agent run:', err);
@@ -212,12 +238,12 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                   <div>
                     <CardTitle className="text-xl text-gray-900">AI Analysis</CardTitle>
                     <p className="text-sm text-gray-600 mt-1">
-                      Completed on {new Date(agentRun.created_at).toLocaleDateString('en-US', { 
+                      Completed on {agentRun.created_at ? new Date(agentRun.created_at).toLocaleDateString('en-US', { 
                         weekday: 'long', 
                         year: 'numeric', 
                         month: 'long', 
                         day: 'numeric' 
-                      })}
+                      }) : 'Unknown date'}
                     </p>
                   </div>
                 </div>
@@ -232,12 +258,21 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                     {Math.round(agentRun.confidence * 100)}% Confidence
                   </span>
                 </div>
-                <Badge 
-                  variant={agentRun.flags.includes('low_confidence') ? 'destructive' : 'secondary'}
-                  className="text-xs"
-                >
-                  {agentRun.flags.includes('low_confidence') ? 'Low Confidence' : 'High Confidence'}
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <Badge 
+                    variant={agentRun.flags.includes('low_confidence') ? 'destructive' : 'secondary'}
+                    className="text-xs"
+                  >
+                    {agentRun.flags.includes('low_confidence') ? 'Low Confidence' : 'High Confidence'}
+                  </Badge>
+                  <button
+                    onClick={loadAgentRun}
+                    className="text-xs text-blue-600 hover:text-blue-800 underline"
+                    disabled={isLoadingRun}
+                  >
+                    {isLoadingRun ? 'Refreshing...' : 'Refresh'}
+                  </button>
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -309,48 +344,133 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
 
             {/* Recommendations */}
             <div className="p-6 border-t border-gray-100 bg-gray-50">
-              <div className="flex items-center space-x-2 mb-4">
-                <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                <h3 className="text-base font-semibold text-gray-900">Strategic Recommendations</h3>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <h3 className="text-base font-semibold text-gray-900">Strategic Recommendations</h3>
+                </div>
+                {agentRuns.length > 1 && (
+                  <button
+                    onClick={() => setShowPreviousRuns(!showPreviousRuns)}
+                    className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {showPreviousRuns ? 'Hide Previous' : `View Previous (${agentRuns.length - 1})`}
+                  </button>
+                )}
               </div>
-              <div className="grid gap-4">
-                {(agentRun.output_json.recommendations || []).map((rec, index) => (
-                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-sm font-semibold text-gray-900 leading-tight flex-1 pr-2">
-                        {rec.action}
-                      </h4>
-                      <Badge variant={getImpactColor(rec.impact)} className="ml-2 flex-shrink-0">
-                        {rec.impact} impact
-                      </Badge>
-                    </div>
-                    <div className="flex items-center space-x-4 text-xs text-gray-600">
-                      {rec.eta_weeks && (
-                        <div className="flex items-center space-x-1">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span>{rec.eta_weeks} weeks</span>
+
+              {/* Current/Latest Recommendations */}
+              <div className="space-y-4">
+                <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <Badge variant="default" className="bg-green-100 text-green-800">
+                      Latest
+                    </Badge>
+                    <span className="text-sm text-gray-600">
+                      {agentRun.created_at ? new Date(agentRun.created_at).toLocaleDateString('en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      }) : 'Unknown date'}
+                    </span>
+                  </div>
+                  <div className="grid gap-3">
+                    {(agentRun.output_json.recommendations || []).map((rec, index) => (
+                      <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="text-sm font-semibold text-gray-900 leading-tight flex-1 pr-2">
+                            {rec.action}
+                          </h4>
+                          <Badge variant={getImpactColor(rec.impact)} className="ml-2 flex-shrink-0">
+                            {rec.impact} impact
+                          </Badge>
                         </div>
-                      )}
-                      {rec.dependency && (
-                        <div className="flex items-center space-x-1">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                          </svg>
-                          <span>{rec.dependency}</span>
+                        <div className="flex items-center space-x-4 text-xs text-gray-600">
+                          {rec.eta_weeks && (
+                            <div className="flex items-center space-x-1">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span>{rec.eta_weeks} weeks</span>
+                            </div>
+                          )}
+                          {rec.dependency && (
+                            <div className="flex items-center space-x-1">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                              </svg>
+                              <span>{rec.dependency}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    {(!agentRun.output_json.recommendations || agentRun.output_json.recommendations.length === 0) && (
+                      <div className="text-sm text-gray-500 italic bg-gray-50 p-3 rounded-lg">
+                        No specific recommendations available for this analysis.
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Previous Recommendations */}
+                {showPreviousRuns && agentRuns.slice(1).map((runGroup, groupIndex) => (
+                  <div key={runGroup.run.id} className="bg-white border border-gray-200 rounded-lg p-4 opacity-75">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+                        Previous
+                      </Badge>
+                      <span className="text-sm text-gray-600">
+                        {runGroup.run.created_at ? new Date(runGroup.run.created_at).toLocaleDateString('en-US', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        }) : 'Unknown date'}
+                      </span>
+                    </div>
+                    <div className="grid gap-3">
+                      {(runGroup.run.output_json.recommendations || []).map((rec, index) => (
+                        <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="text-sm font-semibold text-gray-900 leading-tight flex-1 pr-2">
+                              {rec.action}
+                            </h4>
+                            <Badge variant={getImpactColor(rec.impact)} className="ml-2 flex-shrink-0">
+                              {rec.impact} impact
+                            </Badge>
+                          </div>
+                          <div className="flex items-center space-x-4 text-xs text-gray-600">
+                            {rec.eta_weeks && (
+                              <div className="flex items-center space-x-1">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{rec.eta_weeks} weeks</span>
+                              </div>
+                            )}
+                            {rec.dependency && (
+                              <div className="flex items-center space-x-1">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                </svg>
+                                <span>{rec.dependency}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {(!runGroup.run.output_json.recommendations || runGroup.run.output_json.recommendations.length === 0) && (
+                        <div className="text-sm text-gray-500 italic bg-gray-50 p-3 rounded-lg">
+                          No specific recommendations available for this analysis.
                         </div>
                       )}
                     </div>
                   </div>
                 ))}
-                {(!agentRun.output_json.recommendations || agentRun.output_json.recommendations.length === 0) && (
-                  <div className="text-sm text-gray-500 italic bg-white p-4 rounded-lg border border-gray-200">
-                    No specific recommendations available for this analysis.
-                  </div>
-                )}
               </div>
             </div>
 

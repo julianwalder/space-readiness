@@ -9,6 +9,7 @@ import { getStages, Stage, getStageById } from '@/lib/stages-service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import AppHeader from '@/components/AppHeader';
 import {
   Select,
   SelectContent,
@@ -251,26 +252,7 @@ export default function VentureManagement() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-xl font-bold text-gray-900">
-                Space Readiness
-              </Link>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-lg font-medium text-gray-900">Venture Management</h1>
-            </div>
-            <Link
-              href="/dashboard"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              ← Back to Dashboard
-            </Link>
-          </div>
-        </div>
-      </div>
+      <AppHeader showNavigation={false} showBackButton={true} title="Venture Management" />
 
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {error && (

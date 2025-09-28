@@ -192,6 +192,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Trigger file processing asynchronously
+    try {
+      const processResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/process-files`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+        },
+        body: JSON.stringify({
+          submissionId: submission.id,
+          ventureId: ventureId
+        })
+      });
+
+      if (!processResponse.ok) {
+        console.warn('File processing failed, but upload succeeded:', await processResponse.text());
+      } else {
+        console.log('File processing triggered successfully');
+      }
+    } catch (processError) {
+      console.warn('Failed to trigger file processing:', processError);
+      // Don't fail the upload if processing fails
+    }
+
     // Return success response
     console.log('Upload successful:', {
       submissionId: submission.id,
