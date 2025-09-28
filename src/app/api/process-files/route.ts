@@ -206,7 +206,7 @@ function chunkText(text: string, filePath: string): Array<{ content: string; sou
   let chunkIndex = 0;
   
   while (start < text.length) {
-    const end = Math.min(start + maxChunkSize, text.length);
+    let end = Math.min(start + maxChunkSize, text.length);
     let chunkText = text.slice(start, end);
     
     // Try to break at sentence boundaries
