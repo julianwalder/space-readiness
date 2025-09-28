@@ -37,6 +37,7 @@ export default function Dashboard() {
 
   // Load data when current venture changes
   useEffect(() => {
+    console.log('Dashboard - currentVenture changed:', currentVenture);
     if (!currentVenture) {
       setScores([]);
       setRecs([]);
@@ -49,6 +50,7 @@ export default function Dashboard() {
       try {
         setIsLoading(true);
         const vid = currentVenture.id;
+        console.log('Dashboard - loading data for venture ID:', vid);
 
         const { data: s } = await supabase.from('scores').select('*').eq('venture_id', vid);
         setScores((s ?? []).map((r: { dimension: string; level: number; confidence?: number }) => ({ dimension: r.dimension, level: r.level, confidence: Number(r.confidence ?? 0.5) })));
@@ -62,17 +64,23 @@ export default function Dashboard() {
           .limit(1)
           .single();
         
+        console.log('Dashboard - latestSubmission:', latestSubmission);
+        
         const { data: agentRuns } = await supabase
           .from('agent_runs')
           .select('*')
           .eq('submission_id', latestSubmission?.id)
           .order('created_at', { ascending: false });
         
+        console.log('Dashboard - agentRuns:', agentRuns);
+        
         // Extract recommendations from agent runs
         const allRecs: Rec[] = [];
         if (agentRuns) {
           agentRuns.forEach(run => {
+            console.log('Dashboard - run.output_json:', run.output_json);
             if (run.output_json?.recommendations) {
+              console.log('Dashboard - recommendations found:', run.output_json.recommendations);
               run.output_json.recommendations.forEach((rec: any) => {
                 allRecs.push({
                   id: run.id,
@@ -85,6 +93,7 @@ export default function Dashboard() {
             }
           });
         }
+        console.log('Dashboard - allRecs:', allRecs);
         setRecs(allRecs);
         
         // Load uploaded files
