@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { OpenAI } from 'openai';
 import * as mammoth from 'mammoth';
-import * as pdfjsLib from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 import * as xlsx from 'xlsx';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -12,8 +12,7 @@ const openaiApiKey = process.env.OPENAI_API_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 const openai = new OpenAI({ apiKey: openaiApiKey });
 
-// Configure PDF.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+// PDF.js legacy build doesn't need worker configuration
 
 interface ProcessFilesRequest {
   submissionId: string;
