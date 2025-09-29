@@ -1,8 +1,32 @@
+// Polyfills for Node.js environment
+if (typeof globalThis.DOMMatrix === 'undefined') {
+  globalThis.DOMMatrix = class DOMMatrix {
+    constructor(init?: string | number[]) {
+      // Simple polyfill for DOMMatrix
+    }
+  } as any;
+}
+
+if (typeof globalThis.DOMPoint === 'undefined') {
+  globalThis.DOMPoint = class DOMPoint {
+    constructor(x = 0, y = 0, z = 0, w = 1) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      this.w = w;
+    }
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+  } as any;
+}
+
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { OpenAI } from 'openai';
 import * as mammoth from 'mammoth';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import * as pdfjsLib from 'pdfjs-dist';
 import * as xlsx from 'xlsx';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -12,7 +36,8 @@ const openaiApiKey = process.env.OPENAI_API_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 const openai = new OpenAI({ apiKey: openaiApiKey });
 
-// PDF.js legacy build doesn't need worker configuration
+// Configure PDF.js
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 interface ProcessFilesRequest {
   submissionId: string;
