@@ -1,6 +1,6 @@
 // Polyfills for Node.js environment
 if (typeof globalThis.DOMMatrix === 'undefined') {
-  (globalThis as any).DOMMatrix = class DOMMatrix {
+  (globalThis as unknown as { DOMMatrix: typeof DOMMatrix }).DOMMatrix = class DOMMatrix {
     constructor(_init?: string | number[]) {
       // Simple polyfill for DOMMatrix
     }
@@ -8,7 +8,7 @@ if (typeof globalThis.DOMMatrix === 'undefined') {
 }
 
 if (typeof globalThis.DOMPoint === 'undefined') {
-  (globalThis as any).DOMPoint = class DOMPoint {
+  (globalThis as unknown as { DOMPoint: typeof DOMPoint }).DOMPoint = class DOMPoint {
     constructor(x = 0, y = 0, z = 0, w = 1) {
       this.x = x;
       this.y = y;
