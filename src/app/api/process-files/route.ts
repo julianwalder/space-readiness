@@ -1,10 +1,10 @@
 // Polyfills for Node.js environment
 if (typeof globalThis.DOMMatrix === 'undefined') {
   globalThis.DOMMatrix = class DOMMatrix {
-    constructor(init?: string | number[]) {
+    constructor(_init?: string | number[]) {
       // Simple polyfill for DOMMatrix
     }
-  } as any;
+  } as unknown as typeof DOMMatrix;
 }
 
 if (typeof globalThis.DOMPoint === 'undefined') {
@@ -19,7 +19,7 @@ if (typeof globalThis.DOMPoint === 'undefined') {
     y: number;
     z: number;
     w: number;
-  } as any;
+  } as unknown as typeof DOMPoint;
 }
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     // Process each file
     for (const file of files) {
       try {
-        await processFile(file, ventureId);
+        await processFile(file);
       } catch (error) {
         console.error(`Failed to process file ${file.id}:`, error);
         // Continue processing other files even if one fails
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function processFile(file: { id: string; path: string; mime: string }, _ventureId: string) {
+async function processFile(file: { id: string; path: string; mime: string }) {
   console.log(`Processing file: ${file.path} (${file.mime})`);
 
   // Download file from Supabase Storage
