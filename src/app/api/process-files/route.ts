@@ -168,7 +168,12 @@ async function extractTextFromPDF(fileData: Blob): Promise<string> {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
     const pageText = textContent.items
-      .map((item: { str?: string }) => item.str || '')
+      .map((item) => {
+        if ('str' in item) {
+          return item.str || '';
+        }
+        return '';
+      })
       .join(' ');
     fullText += pageText + '\n';
   }
