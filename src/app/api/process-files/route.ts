@@ -1,14 +1,14 @@
 // Polyfills for Node.js environment
 if (typeof globalThis.DOMMatrix === 'undefined') {
-  globalThis.DOMMatrix = class DOMMatrix {
+  (globalThis as any).DOMMatrix = class DOMMatrix {
     constructor(_init?: string | number[]) {
       // Simple polyfill for DOMMatrix
     }
-  } as unknown as typeof DOMMatrix;
+  };
 }
 
 if (typeof globalThis.DOMPoint === 'undefined') {
-  globalThis.DOMPoint = class DOMPoint {
+  (globalThis as any).DOMPoint = class DOMPoint {
     constructor(x = 0, y = 0, z = 0, w = 1) {
       this.x = x;
       this.y = y;
@@ -19,7 +19,7 @@ if (typeof globalThis.DOMPoint === 'undefined') {
     y: number;
     z: number;
     w: number;
-  } as unknown as typeof DOMPoint;
+  };
 }
 
 import { NextRequest, NextResponse } from 'next/server';
