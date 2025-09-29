@@ -183,7 +183,8 @@ async function extractTextFromPDF(fileData: Blob): Promise<string> {
 
 async function extractTextFromWord(fileData: Blob): Promise<string> {
   const arrayBuffer = await fileData.arrayBuffer();
-  const result = await mammoth.extractRawText({ buffer: arrayBuffer });
+  const buffer = Buffer.from(arrayBuffer);
+  const result = await mammoth.extractRawText({ buffer });
   return result.value;
 }
 
