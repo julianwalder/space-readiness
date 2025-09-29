@@ -1,5 +1,5 @@
 // Import polyfills first - MUST be at the very top
-import '../lib/polyfills';
+import '../../lib/polyfills';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
