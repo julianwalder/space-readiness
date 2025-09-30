@@ -92,7 +92,7 @@ export default function Landing() {
               <ul className="text-sm text-gray-500 space-y-1">
                 <li>• Priority actions to advance readiness levels</li>
                 <li>• Timeline recommendations for next funding round</li>
-                <li>• "What-if" scenarios for different strategies</li>
+                <li>• &ldquo;What-if&rdquo; scenarios for different strategies</li>
                 <li>• Evidence requirements for each milestone</li>
               </ul>
             </div>

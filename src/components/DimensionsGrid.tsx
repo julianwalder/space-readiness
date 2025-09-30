@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react';
 import { DIMENSIONS, getDimensionLevels, getRubricDataSync, type Dimension, type Level } from '@/lib/rubric-service';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const DIMENSION_DESCRIPTIONS: Record<Dimension, string> = {
