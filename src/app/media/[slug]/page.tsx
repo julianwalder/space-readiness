@@ -8,11 +8,11 @@ const pressReleases = [
   {
     id: 'multidimensional-framework-launch',
     slug: 'multidimensional-framework-launch',
-    title: 'Space for Business Launches Multidimensional De-Risking Framework to Bridge Space Founders with the Right Funding Solutions',
+    title: 'Multidimensional De-Risking Framework to Bridge Space Founders with the Right Funding Solutions',
     dateline: 'Zurich, October 3rd 2025',
     excerpt: 'Julian Walder, student at Space for Business, today announced the launch of the Multidimensional De-Risking Framework for Space Ventures, a breakthrough tool designed to systematically reduce the high risks faced by early-stage space startups and connect founders with the right funding solutions.',
     fullContent: {
-      title: 'Space for Business Launches Multidimensional De-Risking Framework to Bridge Space Founders with the Right Funding Solutions',
+      title: 'Multidimensional De-Risking Framework to Bridge Space Founders with the Right Funding Solutions',
       dateline: 'Zurich, October 3rd 2025',
       body: `Julian Walder, student at Space for Business, today announced the launch of the Multidimensional De-Risking Framework for Space Ventures, a breakthrough tool designed to systematically reduce the high risks faced by early-stage space startups and connect founders with the right funding solutions.
 
