@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
 import FAQAccordion from '@/components/FAQAccordion';
+import PublicHeader from '@/components/PublicHeader';
 
 export const metadata: Metadata = {
   title: 'FAQ — Multidimensional De-Risking for Space Ventures (KTH IRL + System Integration)',
@@ -222,25 +223,7 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center">
-              <Link href="/" className="flex-shrink-0">
-                <span className="text-xl font-bold text-gray-900">Space Readiness</span>
-              </Link>
-            </div>
-            <div className="flex items-center">
-              <Link 
-                href="/signup" 
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       <main className="px-6 md:px-10">
         {/* Breadcrumbs */}

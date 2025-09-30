@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
+import PublicHeader from '@/components/PublicHeader';
 
 export const metadata: Metadata = {
   title: 'Media & Press — Derisk Space',
@@ -37,7 +38,7 @@ const pressReleases = [
     slug: 'multidimensional-framework-launch',
     title: 'Space for Business Launches Multidimensional De-Risking Framework to Bridge Space Founders with the Right Funding Solutions',
     dateline: 'Zurich, October 3rd 2025',
-    excerpt: 'Space for Business today announced the launch of its Multidimensional De-Risking Framework for Space Ventures, a breakthrough tool designed to systematically reduce the high risks faced by early-stage space startups and connect founders with the funding solutions that match their readiness.'
+    excerpt: 'Julian Walder, student at Space for Business, today announced the launch of the Multidimensional De-Risking Framework for Space Ventures, a breakthrough tool designed to systematically reduce the high risks faced by early-stage space startups and connect founders with the right funding solutions.'
   }
 ];
 
@@ -45,25 +46,7 @@ export default function MediaPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center">
-              <Link href="/" className="flex-shrink-0">
-                <span className="text-xl font-bold text-gray-900">Space Readiness</span>
-              </Link>
-            </div>
-            <div className="flex items-center">
-              <Link 
-                href="/signup" 
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       <main className="px-6 md:px-10">
         {/* Breadcrumbs */}
