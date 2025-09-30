@@ -59,7 +59,7 @@ export default function LandingFAQ() {
   };
 
   return (
-    <section className="mx-auto max-w-6xl py-16 border-t">
+    <section className="mx-auto max-w-4xl py-16 border-t">
       <h2 className="text-2xl md:text-3xl font-semibold mb-8">Frequently Asked Questions</h2>
       
       <div className="space-y-0">

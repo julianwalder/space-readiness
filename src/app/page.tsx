@@ -3,6 +3,7 @@ import RadarChartDemo from '@/components/RadarChartDemo';
 import DimensionsGrid from '@/components/DimensionsGrid';
 import LandingFAQ from '@/components/LandingFAQ';
 import PublicHeader from '@/components/PublicHeader';
+import Footer from '@/components/Footer';
 
 export default function Landing() {
   return (
@@ -37,7 +38,11 @@ export default function Landing() {
         {/* Dimensions */}
         <section id="dimensions" className="mx-auto max-w-6xl py-16 border-t">
           <h2 className="text-2xl md:text-3xl font-semibold">The 8 Readiness Dimensions</h2>
-          <p className="mt-3 text-gray-600">Each is scored on a 1–9 scale (TRL-like) with evidence-backed justification.</p>
+          <p className="mt-3 text-gray-600">
+            Our comprehensive assessment framework evaluates your space venture across critical readiness areas. 
+            Each dimension is scored on a 1–9 scale with evidence-backed justification, helping you identify 
+            strengths, gaps, and actionable next steps toward your funding milestone.
+          </p>
           <div className="mt-8">
             <DimensionsGrid />
           </div>
@@ -52,9 +57,45 @@ export default function Landing() {
         <section id="how" className="mx-auto max-w-6xl py-16 border-t">
           <h2 className="text-2xl md:text-3xl font-semibold">How it works</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl border p-6"><h3 className="font-semibold">1) Intake</h3><p className="mt-2 text-gray-600">Guided questions + file uploads (deck, tech report, LoIs).</p></div>
-            <div className="rounded-2xl border p-6"><h3 className="font-semibold">2) AI Scoring</h3><p className="mt-2 text-gray-600">Agents assess evidence and assign 1–9 levels with confidence & justification.</p></div>
-            <div className="rounded-2xl border p-6"><h3 className="font-semibold">3) Roadmap</h3><p className="mt-2 text-gray-600">Prioritized next steps and &ldquo;what-if&rdquo; simulations to hit milestones.</p></div>
+            <div className="rounded-2xl border p-6 hover:shadow-sm transition">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg">1</div>
+                <h3 className="font-semibold text-lg">Intake</h3>
+              </div>
+              <p className="text-gray-600 mb-3">Upload your pitch deck, technical documentation, and evidence files.</p>
+              <ul className="text-sm text-gray-500 space-y-1">
+                <li>• Pitch deck and business plan</li>
+                <li>• Technical specifications and test results</li>
+                <li>• Letters of Intent (LoIs) and customer agreements</li>
+                <li>• Financial projections and funding history</li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border p-6 hover:shadow-sm transition">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg">2</div>
+                <h3 className="font-semibold text-lg">AI Scoring</h3>
+              </div>
+              <p className="text-gray-600 mb-3">Specialized AI agents analyze your materials across 8 readiness dimensions.</p>
+              <ul className="text-sm text-gray-500 space-y-1">
+                <li>• Technology readiness and innovation level</li>
+                <li>• Market validation and customer traction</li>
+                <li>• Business model and revenue potential</li>
+                <li>• Team expertise and execution capability</li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border p-6 hover:shadow-sm transition">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg">3</div>
+                <h3 className="font-semibold text-lg">Roadmap</h3>
+              </div>
+              <p className="text-gray-600 mb-3">Receive actionable recommendations and milestone planning.</p>
+              <ul className="text-sm text-gray-500 space-y-1">
+                <li>• Priority actions to advance readiness levels</li>
+                <li>• Timeline recommendations for next funding round</li>
+                <li>• "What-if" scenarios for different strategies</li>
+                <li>• Evidence requirements for each milestone</li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -63,32 +104,7 @@ export default function Landing() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-center md:text-left">
-              <span className="text-xl font-bold text-gray-900">Space Readiness</span>
-              <p className="mt-2 text-sm text-gray-600">
-                Built on KTH Innovation Readiness Level + System Integration Readiness
-              </p>
-            </div>
-            <div className="mt-4 md:mt-0 flex space-x-6">
-              <Link href="/faq" className="text-sm text-gray-600 hover:text-gray-900">
-                FAQ
-              </Link>
-              <Link href="/media" className="text-sm text-gray-600 hover:text-gray-900">
-                Media
-              </Link>
-              <Link href="/privacy-policy" className="text-sm text-gray-600 hover:text-gray-900">
-                Privacy Policy
-              </Link>
-              <Link href="/terms-of-service" className="text-sm text-gray-600 hover:text-gray-900">
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
