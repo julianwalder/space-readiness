@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import RadarChartDemo from '@/components/RadarChartDemo';
 import DimensionsGrid from '@/components/DimensionsGrid';
+import LandingFAQ from '@/components/LandingFAQ';
 
 export default function Landing() {
   return (
@@ -73,6 +74,9 @@ export default function Landing() {
             <div className="rounded-2xl border p-6"><h3 className="font-semibold">3) Roadmap</h3><p className="mt-2 text-gray-600">Prioritized next steps and &ldquo;what-if&rdquo; simulations to hit milestones.</p></div>
           </div>
         </section>
+
+        {/* FAQ Section */}
+        <LandingFAQ />
       </main>
 
       {/* Footer */}
@@ -86,6 +90,12 @@ export default function Landing() {
               </p>
             </div>
             <div className="mt-4 md:mt-0 flex space-x-6">
+              <Link href="/faq" className="text-sm text-gray-600 hover:text-gray-900">
+                FAQ
+              </Link>
+              <Link href="/media" className="text-sm text-gray-600 hover:text-gray-900">
+                Media
+              </Link>
               <Link href="/privacy-policy" className="text-sm text-gray-600 hover:text-gray-900">
                 Privacy Policy
               </Link>
