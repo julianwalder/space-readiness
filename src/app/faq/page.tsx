@@ -264,7 +264,7 @@ export default function FAQPage() {
             FAQ — Multidimensional De-Risking for Space Ventures
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed">
-            This FAQ explains how our KTH Innovation Readiness Level (IRL)–based model de-risks space ventures across 8 dimensions, including System Integration Readiness. It's designed for upstream, downstream, and hybrid space startups.
+            This FAQ explains how our KTH Innovation Readiness Level (IRL)–based model de-risks space ventures across 8 dimensions, including System Integration Readiness. It&apos;s designed for upstream, downstream, and hybrid space startups.
           </p>
         </section>
 
