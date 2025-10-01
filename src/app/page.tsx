@@ -28,6 +28,15 @@ export default function Landing() {
                 <Link href="#dimensions" className="rounded-xl border px-6 py-3 font-medium text-center">See dimensions</Link>
               </div>
               <p className="mt-3 text-sm text-gray-500">Built on KTH Innovation Readiness Level + System Integration Readiness.</p>
+              <div className="mt-4 flex items-center gap-2 text-sm">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="text-gray-600">Are you an investor?</span>
+                <span className="text-gray-400 font-medium">
+                  Available Soon →
+                </span>
+              </div>
             </div>
             <div className="border rounded-2xl p-6 shadow-sm">
               <RadarChartDemo />
@@ -95,6 +104,69 @@ export default function Landing() {
                 <li>• &ldquo;What-if&rdquo; scenarios for different strategies</li>
                 <li>• Evidence requirements for each milestone</li>
               </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Investor Section */}
+        <section className="mx-auto max-w-6xl py-16 border-t">
+          <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-8 md:p-12">
+            <div className="grid gap-8 md:grid-cols-2 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  For Investors
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                  Track Portfolio Ventures in Real-Time
+                </h2>
+                <p className="mt-4 text-lg text-gray-600">
+                  Follow the ventures you&apos;re interested in and receive updates on their readiness scores, 
+                  progress milestones, and risk profiles across all 8 dimensions.
+                </p>
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3">
+                    <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-gray-700"><strong>Monitor progress:</strong> Track how ventures improve their readiness scores over time</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-gray-700"><strong>Identify bottlenecks:</strong> See which dimensions need attention before the next funding round</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-gray-700"><strong>Evidence-based insights:</strong> Review AI-generated assessments backed by actual documentation</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                  <h3 className="font-semibold text-gray-900 mb-2">Follow Ventures</h3>
+                  <p className="text-sm text-gray-600">Get notified when your portfolio companies complete assessments and upload new evidence.</p>
+                </div>
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                  <h3 className="font-semibold text-gray-900 mb-2">Compare Progress</h3>
+                  <p className="text-sm text-gray-600">View readiness trends across multiple ventures and identify the strongest candidates.</p>
+                </div>
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                  <h3 className="font-semibold text-gray-900 mb-2">Due Diligence Support</h3>
+                  <p className="text-sm text-gray-600">Use our comprehensive 8-dimension framework to streamline your investment process.</p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <div className="rounded-xl bg-gray-400 px-8 py-3 text-white font-medium text-center cursor-not-allowed opacity-75">
+                Available Soon
+              </div>
+              <span className="text-sm text-gray-600">Free account • No credit card required</span>
             </div>
           </div>
         </section>

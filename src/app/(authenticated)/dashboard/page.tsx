@@ -28,22 +28,30 @@ const formatFileSize = (bytes: number) => {
 };
 
 export default function Dashboard() {
-  const { currentVenture, ventures } = useVenture();
+  const { currentVenture, ventures, isLoading: venturesLoading } = useVenture();
   const [scores, setScores] = useState<Score[]>([]);
   const [recs, setRecs] = useState<Rec[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastIntakeUpdate, setLastIntakeUpdate] = useState<string | null>(null);
+  const [lastFileUpload, setLastFileUpload] = useState<string | null>(null);
+  const [lastAssessment, setLastAssessment] = useState<string | null>(null);
 
   // Load data when current venture changes
   useEffect(() => {
     console.log('Dashboard - currentVenture changed:', currentVenture);
     console.log('Dashboard - ventures:', ventures);
+    
+    // Don't load data if we're still loading ventures or if no current venture
     if (!currentVenture) {
       console.log('Dashboard - No current venture, setting loading to false');
       setScores([]);
       setRecs([]);
       setUploadedFiles([]);
+      setLastIntakeUpdate(null);
+      setLastFileUpload(null);
+      setLastAssessment(null);
       setIsLoading(false);
       return;
     }
@@ -107,6 +115,38 @@ export default function Dashboard() {
           console.error('Error loading files:', fileError);
         }
         
+        // Load last action dates
+        // 1. Last intake update (venture updated_at)
+        if (currentVenture.updated_at) {
+          setLastIntakeUpdate(currentVenture.updated_at);
+        }
+        
+        // 2. Last file upload - need to join through submissions
+        const { data: lastFile } = await supabase
+          .from('files')
+          .select('created_at, submissions!inner(venture_id)')
+          .eq('submissions.venture_id', vid)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (lastFile) {
+          setLastFileUpload(lastFile.created_at);
+        }
+        
+        // 3. Last assessment (submission)
+        const { data: lastSubmission } = await supabase
+          .from('submissions')
+          .select('created_at')
+          .eq('venture_id', vid)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (lastSubmission) {
+          setLastAssessment(lastSubmission.created_at);
+        }
+        
         setError(null);
       } catch (err) {
         console.error('Error loading venture data:', err);
@@ -126,7 +166,7 @@ export default function Dashboard() {
       .subscribe();
 
     return () => { supabase.removeChannel(ch); };
-  }, [currentVenture, ventures]);
+  }, [currentVenture]);
 
   // Create radar data showing all dimensions, with real scores where available
   const radarData = DIMENSIONS.map(dimension => {
@@ -144,12 +184,14 @@ export default function Dashboard() {
   console.log('Dashboard - recs count:', recs.length);
   console.log('Dashboard - grouped keys:', Object.keys(grouped));
 
-  if (isLoading) {
+  if (venturesLoading || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+          <p className="mt-4 text-gray-600">
+            {venturesLoading ? 'Loading ventures...' : 'Loading dashboard...'}
+          </p>
         </div>
       </div>
     );
@@ -274,6 +316,150 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Get Started and Following Investors - Side by Side */}
+        <div className="mb-8 grid gap-6 lg:grid-cols-2">
+          {/* Get Started - 50% */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Get Started</h2>
+            <div className="mb-4 text-sm text-gray-600">
+              {currentVenture ? (
+                <>Current Venture: <span className="font-medium text-gray-900">{currentVenture.name}</span></>
+              ) : (
+                'Select or create a venture to get started'
+              )}
+            </div>
+            <div className="space-y-3">
+              <Link 
+                href="/intake" 
+                className="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border-2 border-blue-200"
+              >
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-gray-900">Complete Intake</div>
+                  <div className="text-xs text-gray-600 mt-0.5">Provide venture information</div>
+                  {lastIntakeUpdate && (
+                    <div className="flex items-center mt-2 text-xs text-gray-500">
+                      <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Last updated {new Date(lastIntakeUpdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                  )}
+                </div>
+              </Link>
+              
+              <Link 
+                href="/upload?from=/dashboard" 
+                className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex-shrink-0 w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-gray-900">Upload Files</div>
+                  <div className="text-xs text-gray-600 mt-0.5">Share documents for analysis</div>
+                  {lastFileUpload && (
+                    <div className="flex items-center mt-2 text-xs text-gray-500">
+                      <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Last uploaded {new Date(lastFileUpload).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                  )}
+                </div>
+              </Link>
+              
+              <Link 
+                href="/assessment" 
+                className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex-shrink-0 w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-gray-900">Start Assessment</div>
+                  <div className="text-xs text-gray-600 mt-0.5">Complete your readiness evaluation</div>
+                  {lastAssessment && (
+                    <div className="flex items-center mt-2 text-xs text-gray-500">
+                      <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Last completed {new Date(lastAssessment).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Following Investors - 50% */}
+          {currentVenture && (
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Following Investors</h2>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Investors tracking your venture&apos;s progress
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    // TODO: Implement share progress functionality
+                    alert('Share progress feature coming soon!');
+                  }}
+                  className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                  <span>Share Progress</span>
+                </button>
+              </div>
+              
+              {/* Mock Investor Data - Replace with real data when available */}
+              <div className="space-y-3">
+                {[
+                  { id: 1, name: 'Sarah Chen', role: 'Partner at Orbital Ventures', initials: 'SC', color: 'bg-purple-500', following_since: '2024-08-15', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces' },
+                  { id: 2, name: 'Michael Rodriguez', role: 'Angel Investor', initials: 'MR', color: 'bg-blue-500', following_since: '2024-09-02', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces' },
+                  { id: 3, name: 'Jennifer Park', role: 'Principal at Space Capital', initials: 'JP', color: 'bg-green-500', following_since: '2024-09-20', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=faces' },
+                ].map((investor) => (
+                  <div key={investor.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm">
+                      <img 
+                        src={investor.image} 
+                        alt={investor.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-gray-900 truncate">
+                        {investor.name}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-0.5">
+                        {investor.role}
+                      </div>
+                      <div className="flex items-center mt-2 text-xs text-gray-500">
+                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Following since {new Date(investor.following_since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Recommendations */}
         {Object.keys(grouped).length > 0 && (
           <div className="mb-8">
@@ -317,77 +503,6 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Get Started</h2>
-            <div className="grid gap-4 md:grid-cols-3">
-              <Link 
-                href="/intake" 
-                className="flex flex-col items-center rounded-lg border-2 border-blue-200 bg-blue-50 px-6 py-6 text-center hover:bg-blue-100 transition-colors group"
-              >
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-700 transition-colors">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Complete Intake</h3>
-                <p className="text-sm text-gray-600">Provide venture information</p>
-              </Link>
-              
-              <Link 
-                href="/upload?from=/dashboard" 
-                className="flex flex-col items-center rounded-lg border border-gray-200 px-6 py-6 text-center hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
-                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Upload Files</h3>
-                <p className="text-sm text-gray-600">Share documents for analysis</p>
-              </Link>
-              
-              <Link 
-                href="/assessment" 
-                className="flex flex-col items-center rounded-lg border border-gray-200 px-6 py-6 text-center hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
-                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Start Assessment</h3>
-                <p className="text-sm text-gray-600">Complete your readiness evaluation</p>
-              </Link>
-            </div>
-            
-            {/* Help Text */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-800">Getting Started</h4>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Start with the assessment to get your baseline readiness scores. You can upload files and complete the intake form at any time to enhance your analysis.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 text-sm text-gray-600">
-              {currentVenture ? (
-                <>Current Venture: <span className="font-medium text-gray-900">{currentVenture.name}</span></>
-              ) : (
-                'Select or create a venture to get started'
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Uploaded Files */}
         {uploadedFiles.length > 0 && (
