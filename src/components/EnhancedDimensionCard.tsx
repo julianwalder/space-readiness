@@ -8,6 +8,7 @@ import FirstTimeAnalysisCard from './FirstTimeAnalysisCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { type Dimension } from '@/lib/rubric-service';
 
 type Score = { dimension: string; level: number; confidence: number };
@@ -174,6 +175,15 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
       case 'medium': return 'secondary';
       case 'low': return 'outline';
       default: return 'outline';
+    }
+  };
+
+  const getImpactBadgeStyle = (impact: string) => {
+    switch (impact) {
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -380,31 +390,73 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                   <div className="grid gap-3">
                     {(agentRun.output_json.recommendations || []).map((rec, index) => (
                       <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="text-sm font-semibold text-gray-900 leading-tight flex-1 pr-2">
-                            {rec.action}
-                          </h4>
-                          <Badge variant={getImpactColor(rec.impact)} className="ml-2 flex-shrink-0">
-                            {rec.impact} impact
-                          </Badge>
-                        </div>
-                        <div className="flex items-center space-x-4 text-xs text-gray-600">
-                          {rec.eta_weeks && (
-                            <div className="flex items-center space-x-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              <span>{rec.eta_weeks} weeks</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1 pr-4">
+                            <h4 className="text-sm font-semibold text-gray-900 leading-tight mb-2">
+                              {rec.action}
+                            </h4>
+                            <div className="mb-2">
+                              <Badge className={`border text-xs font-medium ${getImpactBadgeStyle(rec.impact)}`}>
+                                {rec.impact} impact
+                              </Badge>
                             </div>
-                          )}
-                          {rec.dependency && (
-                            <div className="flex items-center space-x-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                              </svg>
-                              <span>{rec.dependency}</span>
+                            <div className="flex items-center space-x-4 text-xs text-gray-600">
+                              {rec.eta_weeks && (
+                                <div className="flex items-center space-x-1">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  <span>{rec.eta_weeks} weeks</span>
+                                </div>
+                              )}
+                              {rec.dependency && (
+                                <div className="flex items-center space-x-1">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                  </svg>
+                                  <span>{rec.dependency}</span>
+                                </div>
+                              )}
                             </div>
-                          )}
+                          </div>
+                          <div className="flex-shrink-0 flex items-center h-full">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="text-xs">
+                                  Learn how
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg">
+                                <DialogHeader>
+                                  <DialogTitle>Video Lessons Coming Soon</DialogTitle>
+                                  <DialogDescription>
+                                    We're working with renowned professionals to bring you expert video lessons on this topic.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <div className="flex items-center space-x-2 mb-2">
+                                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                      </svg>
+                                      <span className="font-medium text-blue-900">Expert Video Content</span>
+                                    </div>
+                                    <p className="text-sm text-blue-800">
+                                      Learn from industry leaders and renowned professionals who have successfully navigated similar challenges in space ventures.
+                                    </p>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="inline-flex items-center space-x-2 text-sm text-gray-600">
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                      </svg>
+                                      <span>Available soon</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -435,31 +487,73 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                     <div className="grid gap-3">
                       {(runGroup.run.output_json.recommendations || []).map((rec, index) => (
                         <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="text-sm font-semibold text-gray-900 leading-tight flex-1 pr-2">
-                              {rec.action}
-                            </h4>
-                            <Badge variant={getImpactColor(rec.impact)} className="ml-2 flex-shrink-0">
-                              {rec.impact} impact
-                            </Badge>
-                          </div>
-                          <div className="flex items-center space-x-4 text-xs text-gray-600">
-                            {rec.eta_weeks && (
-                              <div className="flex items-center space-x-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span>{rec.eta_weeks} weeks</span>
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1 pr-4">
+                              <h4 className="text-sm font-semibold text-gray-900 leading-tight mb-2">
+                                {rec.action}
+                              </h4>
+                              <div className="mb-2">
+                                <Badge className={`border text-xs font-medium ${getImpactBadgeStyle(rec.impact)}`}>
+                                  {rec.impact} impact
+                                </Badge>
                               </div>
-                            )}
-                            {rec.dependency && (
-                              <div className="flex items-center space-x-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                </svg>
-                                <span>{rec.dependency}</span>
+                              <div className="flex items-center space-x-4 text-xs text-gray-600">
+                                {rec.eta_weeks && (
+                                  <div className="flex items-center space-x-1">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>{rec.eta_weeks} weeks</span>
+                                  </div>
+                                )}
+                                {rec.dependency && (
+                                  <div className="flex items-center space-x-1">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                    </svg>
+                                    <span>{rec.dependency}</span>
+                                  </div>
+                                )}
                               </div>
-                            )}
+                            </div>
+                            <div className="flex-shrink-0 flex items-center h-full">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" className="text-xs">
+                                    Learn how
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg">
+                                  <DialogHeader>
+                                    <DialogTitle>Video Lessons Coming Soon</DialogTitle>
+                                    <DialogDescription>
+                                      We're working with renowned professionals to bring you expert video lessons on this topic.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                      <div className="flex items-center space-x-2 mb-2">
+                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        <span className="font-medium text-blue-900">Expert Video Content</span>
+                                      </div>
+                                      <p className="text-sm text-blue-800">
+                                        Learn from industry leaders and renowned professionals who have successfully navigated similar challenges in space ventures.
+                                      </p>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="inline-flex items-center space-x-2 text-sm text-gray-600">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Available soon</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -476,12 +570,13 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
 
             {/* Re-run Button */}
             <div className="p-6 border-t border-gray-200 bg-white">
-              <Button
-                onClick={handleRerun}
-                disabled={isRerunning}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                size="lg"
-              >
+              <div className="flex justify-center">
+                <Button
+                  onClick={handleRerun}
+                  disabled={isRerunning}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                  size="lg"
+                >
                 {isRerunning ? (
                   <>
                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -498,7 +593,8 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                     Run New Assessment
                   </>
                 )}
-              </Button>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

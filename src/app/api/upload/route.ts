@@ -307,9 +307,14 @@ export async function GET(request: NextRequest) {
     const formattedFiles = files?.map(file => {
       // Type assertion to handle the Supabase query result structure
       const submission = file.submissions as unknown as { id: string; status: string; ventures: { name: string } };
+      
+      // Extract filename and remove timestamp prefix
+      const fullFileName = file.path.split('/').pop() || '';
+      const fileName = fullFileName.replace(/^\d+_/, ''); // Remove timestamp prefix (digits followed by underscore)
+      
       return {
         id: file.id,
-        fileName: file.path.split('/').pop(),
+        fileName: fileName,
         mimeType: file.mime,
         size: file.size,
         uploadedAt: file.created_at,
