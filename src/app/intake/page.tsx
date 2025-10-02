@@ -83,7 +83,7 @@ export default function Intake() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [stages, setStages] = useState<Stage[]>([]);
   const [currentStep, setCurrentStep] = useState(1);
-  const [_isLoading, setIsLoading] = useState(isEditing);
+  const [, setIsLoading] = useState(isEditing);
   const totalSteps = 6;
 
   // Load stages and venture data on component mount

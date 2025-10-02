@@ -65,7 +65,7 @@ export async function runTechAgent(ctx: {
   let evidence: string[] = [];
   if (ctx.ventureId) {
     try {
-      const documentEvidence = await generateEvidenceFromDocuments(ctx.ventureId, 'Technology', ctx);
+      const documentEvidence = await generateEvidenceFromDocuments(ctx.ventureId, 'Technology');
       evidence = documentEvidence;
     } catch (error) {
       console.error('Error generating evidence from documents:', error);
@@ -205,7 +205,7 @@ export async function runMarketAgent(ctx: {
   let evidence: string[] = [];
   if (ctx.ventureId) {
     try {
-      const documentEvidence = await generateEvidenceFromDocuments(ctx.ventureId, 'Customer/Market', ctx);
+      const documentEvidence = await generateEvidenceFromDocuments(ctx.ventureId, 'Customer/Market');
       evidence = documentEvidence;
     } catch (error) {
       console.error('Error generating evidence from documents:', error);
