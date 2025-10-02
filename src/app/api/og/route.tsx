@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export const runtime = 'edge';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // const { searchParams } = new URL(request.url);
     // const _title = searchParams.get('title') || 'Space Venture Readiness';

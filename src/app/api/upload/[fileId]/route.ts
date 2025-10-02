@@ -71,7 +71,7 @@ export async function DELETE(
     }
 
     // Verify user has access to this venture
-    const venture = fileData.submissions.ventures[0];
+    const venture = fileData.submissions[0].ventures[0];
     if (venture.org_id) {
       const { data: membership, error: membershipError } = await supabase
         .from('memberships')
@@ -202,7 +202,7 @@ export async function GET(
     }
 
     // Verify user has access to this venture
-    const venture = fileData.submissions.ventures[0];
+    const venture = fileData.submissions[0].ventures[0];
     if (venture.org_id) {
       const { data: membership, error: membershipError } = await supabase
         .from('memberships')
