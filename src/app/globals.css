@@ -58,6 +58,7 @@
 }
 
 @layer utilities {
+
   .animate-in {
     animation: animate-in 0.3s ease-out;
   }

@@ -358,7 +358,7 @@ export default function Dashboard() {
               </ResponsiveContainer>
               {scores.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-center bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200">
+                  <div className="text-center bg-white/80 rounded-lg p-4 border border-gray-200" style={{WebkitBackdropFilter: 'blur(4px)', backdropFilter: 'blur(4px)'}}>
                     <div className="text-sm font-medium text-gray-600">No Assessments Yet</div>
                     <div className="text-xs text-gray-500 mt-1">
                       Complete assessments to see your actual readiness scores

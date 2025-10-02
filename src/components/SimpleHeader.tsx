@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
-interface PublicHeaderProps {
+interface SimpleHeaderProps {
   showGetStarted?: boolean;
 }
 
-export default function PublicHeader({ showGetStarted = true }: PublicHeaderProps) {
+export default function SimpleHeader({ showGetStarted = true }: SimpleHeaderProps) {
   return (
-    <nav className="border-b border-gray-200 bg-white/90 sticky top-0 z-50" style={{WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)'}}>
+    <nav className="border-b border-gray-200 bg-white/80 sticky top-0 z-50" style={{WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)'}}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -15,10 +15,7 @@ export default function PublicHeader({ showGetStarted = true }: PublicHeaderProp
             </Link>
           </div>
           {showGetStarted && (
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-400 hidden sm:block">
-                For Investors - Available Soon
-              </span>
+            <div className="flex items-center">
               <Link 
                 href="/signup" 
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"

@@ -34,7 +34,7 @@ export default function AppHeader({ showNavigation = true, showBackButton = fals
   }, []);
 
   return (
-    <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <nav className="border-b border-gray-200 bg-white/80 sticky top-0 z-50" style={{WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)'}}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-6">

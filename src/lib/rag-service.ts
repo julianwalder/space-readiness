@@ -108,6 +108,8 @@ export async function getDocumentChunks(
       console.error('Error fetching chunks:', chunksError);
       return [];
     }
+    
+    console.log(`getDocumentChunks: Found ${chunks?.length || 0} chunks for venture ${ventureId} dimension ${dimension}`);
 
     return chunks?.map(chunk => ({
       id: chunk.id,
@@ -177,8 +179,11 @@ export async function generateRecommendationsFromDocuments(
     const chunks = await getDocumentChunks(ventureId, dimension, 3);
     
     if (chunks.length === 0) {
+      console.log(`No document chunks found for venture ${ventureId} dimension ${dimension}`);
       return [];
     }
+    
+    console.log(`Found ${chunks.length} document chunks for venture ${ventureId} dimension ${dimension}`);
 
     // Use OpenAI to analyze the document content and generate recommendations
     const documentContent = chunks.map(c => c.content).join('\n\n');

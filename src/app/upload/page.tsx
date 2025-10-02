@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useVenture } from '@/contexts/VentureContext';
+import BackHeader from '@/components/BackHeader';
 
 interface UploadedFile {
   id: number;
@@ -248,25 +249,7 @@ export default function Upload() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center">
-              <Link href="/dashboard" className="text-xl font-bold text-gray-900">
-                Space Readiness
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.back()}
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                ← Back to {referrer === '/dashboard' ? 'Dashboard' : 'Previous Page'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BackHeader backLabel={`Back to ${referrer === '/dashboard' ? 'Dashboard' : 'Previous Page'}`} />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">

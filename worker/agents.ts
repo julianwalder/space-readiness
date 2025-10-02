@@ -106,6 +106,23 @@ export async function runTechAgent(ctx: {
     try {
       const documentRecommendations = await generateRecommendationsFromDocuments(ctx.ventureId, 'Technology', ctx);
       recommendations = documentRecommendations;
+      
+      // If no document-based recommendations, fall back to default recommendations
+      if (recommendations.length === 0) {
+        console.log(`No document-based recommendations found for ${ctx.ventureId} Technology dimension, using fallback`);
+        recommendations = [
+          {action: 'Complete TRL validation testing', impact: 'high' as const, eta_weeks: 6},
+          {action: 'File additional patents if applicable', impact: 'medium' as const, eta_weeks: 4}
+        ];
+        
+        if (ctx.regulatory_requirements && ctx.regulatory_requirements.length > 0) {
+          recommendations.push({
+            action: `Complete ${ctx.regulatory_requirements.join(', ')} compliance`,
+            impact: 'high' as const,
+            eta_weeks: 8
+          });
+        }
+      }
     } catch (error) {
       console.error('Error generating recommendations from documents:', error);
       recommendations = [
@@ -250,6 +267,15 @@ export async function runMarketAgent(ctx: {
     try {
       const documentRecommendations = await generateRecommendationsFromDocuments(ctx.ventureId, 'Customer/Market', ctx);
       recommendations = documentRecommendations;
+      
+      // If no document-based recommendations, fall back to default recommendations
+      if (recommendations.length === 0) {
+        console.log(`No document-based recommendations found for ${ctx.ventureId} Customer/Market dimension, using fallback`);
+        recommendations = [
+          {action: 'Conduct comprehensive customer interviews', impact: 'high' as const, eta_weeks: 4},
+          {action: 'Validate pricing through customer research', impact: 'medium' as const, eta_weeks: 3}
+        ];
+      }
     } catch (error) {
       console.error('Error generating recommendations from documents:', error);
       recommendations = [
