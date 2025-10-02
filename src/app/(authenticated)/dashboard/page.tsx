@@ -43,6 +43,17 @@ export default function Dashboard() {
   const [selectedStartups, setSelectedStartups] = useState<number[]>([]);
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+  const [investorImageErrors, setInvestorImageErrors] = useState<Set<number>>(new Set());
+
+  // Function to handle image loading errors
+  const handleImageError = (startupId: number) => {
+    setImageErrors(prev => new Set(prev).add(startupId));
+  };
+
+  const handleInvestorImageError = (investorId: number) => {
+    setInvestorImageErrors(prev => new Set(prev).add(investorId));
+  };
 
   // Function to show coming soon modal
   const showComingSoonModal = (title: string, message: string) => {
@@ -540,13 +551,20 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm">
-                        <Image 
-                          src={investor.image} 
-                          alt={investor.name}
-                          width={48}
-                          height={48}
-                          className="w-full h-full object-cover"
-                        />
+                        {investorImageErrors.has(investor.id) ? (
+                          <div className="w-full h-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center text-white font-semibold text-lg">
+                            {investor.initials}
+                          </div>
+                        ) : (
+                          <Image 
+                            src={investor.image} 
+                            alt={investor.name}
+                            width={48}
+                            height={48}
+                            className="w-full h-full object-cover"
+                            onError={() => handleInvestorImageError(investor.id)}
+                          />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-medium text-gray-900 truncate">
@@ -728,7 +746,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               {[
                 { id: 1, name: 'Astra Space', sector: 'Launch Services', stage: 'Pre Seed', following_since: '2024-08-15', image: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=150&h=150&fit=crop&crop=faces', readiness_score: 8 },
-                { id: 2, name: 'Relativity Space', sector: '3D Printed Rockets', stage: 'Seed', following_since: '2024-09-02', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=150&h=150&fit=crop&crop=faces', readiness_score: 7 },
+                { id: 2, name: 'Relativity Space', sector: '3D Printed Rockets', stage: 'Seed', following_since: '2024-09-02', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces', readiness_score: 7 },
                 { id: 3, name: 'Planet Labs', sector: 'Earth Observation', stage: 'Series A', following_since: '2024-09-20', image: 'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=150&h=150&fit=crop&crop=faces', readiness_score: 9 },
               ].map((startup) => (
                 <div 
@@ -748,13 +766,20 @@ export default function Dashboard() {
                 >
                   <div className="flex items-center space-x-3 flex-1">
                     <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm">
-                      <Image 
-                        src={startup.image} 
-                        alt={startup.name}
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-cover"
-                      />
+                      {imageErrors.has(startup.id) ? (
+                        <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg">
+                          {startup.name.charAt(0)}
+                        </div>
+                      ) : (
+                        <Image 
+                          src={startup.image} 
+                          alt={startup.name}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                          onError={() => handleImageError(startup.id)}
+                        />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium text-gray-900 truncate">
