@@ -146,9 +146,12 @@ export async function GET(
   { params }: { params: Promise<{ fileId: string }> }
 ) {
   try {
+    console.log('GET /api/upload/[fileId] - Starting request');
     const { fileId } = await params;
+    console.log('File ID:', fileId);
 
     if (!fileId) {
+      console.log('Error: File ID is required');
       return NextResponse.json(
         { error: 'File ID is required' },
         { status: 400 }
@@ -157,7 +160,9 @@ export async function GET(
 
     // Get authenticated user
     const authHeader = request.headers.get('authorization');
+    console.log('Auth header present:', !!authHeader);
     if (!authHeader?.startsWith('Bearer ')) {
+      console.log('Error: Authentication required');
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -165,16 +170,20 @@ export async function GET(
     }
 
     const token = authHeader.split(' ')[1];
+    console.log('Token length:', token.length);
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      console.log('Auth error:', authError);
       return NextResponse.json(
         { error: 'Invalid authentication token' },
         { status: 401 }
       );
     }
+    console.log('User authenticated:', user.id);
 
     // Get file information with venture details
+    console.log('Querying file data for ID:', fileId);
     const { data: fileData, error: fileError } = await supabase
       .from('files')
       .select(`
@@ -182,9 +191,9 @@ export async function GET(
         path,
         mime,
         size,
-        submissions!inner(
+        submissions(
           venture_id,
-          ventures!inner(
+          ventures(
             id,
             name,
             org_id
@@ -195,15 +204,55 @@ export async function GET(
       .single();
 
     if (fileError || !fileData) {
+      console.log('File query error:', fileError);
       return NextResponse.json(
         { error: 'File not found' },
         { status: 404 }
       );
     }
+    console.log('File data found:', { id: fileData.id, path: fileData.path });
+    console.log('Submissions data:', fileData.submissions);
 
     // Verify user has access to this venture
-    const venture = fileData.submissions[0].ventures[0];
+    console.log('Checking venture access...');
+    console.log('Submissions structure:', JSON.stringify(fileData.submissions, null, 2));
+    
+    let venture = null;
+    
+    // Handle the array structure from Supabase
+    const submission = Array.isArray(fileData.submissions) ? fileData.submissions[0] : fileData.submissions;
+    if (submission && submission.ventures) {
+      // Handle ventures array structure
+      venture = Array.isArray(submission.ventures) ? submission.ventures[0] : submission.ventures;
+    }
+    
+    // If we still don't have venture data, try a fallback approach
+    if (!venture && submission && submission.venture_id) {
+      console.log('Falling back to direct venture query for venture_id:', submission.venture_id);
+      const { data: ventureData, error: ventureError } = await supabase
+        .from('ventures')
+        .select('id, name, org_id')
+        .eq('id', submission.venture_id)
+        .single();
+      
+      if (ventureData && !ventureError) {
+        venture = ventureData;
+        console.log('Fallback venture query successful:', venture);
+      }
+    }
+    
+    if (!venture) {
+      console.error('Could not retrieve venture information');
+      return NextResponse.json(
+        { error: 'Could not verify file access permissions' },
+        { status: 500 }
+      );
+    }
+    
+    console.log('Venture data:', { id: venture.id, name: venture.name, org_id: venture.org_id });
+    
     if (venture.org_id) {
+      console.log('Checking membership for org_id:', venture.org_id);
       const { data: membership, error: membershipError } = await supabase
         .from('memberships')
         .select('user_id')
@@ -212,14 +261,19 @@ export async function GET(
         .single();
 
       if (membershipError || !membership) {
+        console.log('Membership check failed:', membershipError);
         return NextResponse.json(
           { error: 'Access denied to this file' },
           { status: 403 }
         );
       }
+      console.log('Membership verified');
+    } else {
+      console.log('No org_id, skipping membership check');
     }
 
     // Get file from storage
+    console.log('Downloading file from storage:', fileData.path);
     const { data: fileBuffer, error: downloadError } = await supabase.storage
       .from('readiness-uploads')
       .download(fileData.path);
@@ -231,12 +285,16 @@ export async function GET(
         { status: 500 }
       );
     }
+    console.log('File downloaded successfully, size:', fileBuffer.size);
 
     // Convert blob to buffer
+    console.log('Converting blob to buffer...');
     const arrayBuffer = await fileBuffer.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    console.log('Buffer created, length:', buffer.length);
 
     // Return file with appropriate headers
+    console.log('Returning file response...');
     return new NextResponse(buffer, {
       status: 200,
       headers: {
@@ -248,8 +306,13 @@ export async function GET(
 
   } catch (error) {
     console.error('Download file API error:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      fileId: params ? (await params).fileId : 'unknown'
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
