@@ -745,9 +745,9 @@ export default function Dashboard() {
             {/* Mock Startup Data - Replace with real data when available */}
             <div className="space-y-3">
               {[
-                { id: 1, name: 'Astra Space', sector: 'Launch Services', stage: 'Pre Seed', following_since: '2024-08-15', image: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=150&h=150&fit=crop&crop=faces', readiness_score: 8 },
-                { id: 2, name: 'Relativity Space', sector: '3D Printed Rockets', stage: 'Seed', following_since: '2024-09-02', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces', readiness_score: 7 },
-                { id: 3, name: 'Planet Labs', sector: 'Earth Observation', stage: 'Series A', following_since: '2024-09-20', image: 'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=150&h=150&fit=crop&crop=faces', readiness_score: 9 },
+                { id: 1, name: 'Astra Space', sector: 'Launch Services', stage: 'Pre Seed', following_since: '2024-08-15', image: 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=150&h=150&fit=crop&crop=center', readiness_score: 8 },
+                { id: 2, name: 'Relativity Space', sector: '3D Printed Rockets', stage: 'Seed', following_since: '2024-09-02', image: 'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=150&h=150&fit=crop&crop=center', readiness_score: 7 },
+                { id: 3, name: 'Planet Labs', sector: 'Earth Observation', stage: 'Series A', following_since: '2024-09-20', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=150&h=150&fit=crop&crop=center', readiness_score: 9 },
               ].map((startup) => (
                 <div 
                   key={startup.id} 
