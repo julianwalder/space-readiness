@@ -169,14 +169,6 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
     }
   };
 
-  const getImpactColor = (impact: string) => {
-    switch (impact) {
-      case 'high': return 'destructive';
-      case 'medium': return 'secondary';
-      case 'low': return 'outline';
-      default: return 'outline';
-    }
-  };
 
   const getImpactBadgeStyle = (impact: string) => {
     switch (impact) {
@@ -430,7 +422,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                                 <DialogHeader>
                                   <DialogTitle>Video Lessons Coming Soon</DialogTitle>
                                   <DialogDescription>
-                                    We're working with renowned professionals to bring you expert video lessons on this topic.
+                                    We&apos;re working with renowned professionals to bring you expert video lessons on this topic.
                                   </DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-4">
@@ -469,7 +461,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                 </div>
 
                 {/* Previous Recommendations */}
-                {showPreviousRuns && agentRuns.slice(1).map((runGroup, _groupIndex) => (
+                {showPreviousRuns && agentRuns.slice(1).map((runGroup) => (
                   <div key={runGroup.run.id} className="bg-white border border-gray-200 rounded-lg p-4 opacity-75">
                     <div className="flex items-center space-x-2 mb-3">
                       <Badge variant="secondary" className="bg-gray-100 text-gray-800">
@@ -527,7 +519,7 @@ export default function EnhancedDimensionCard({ dimension, scores, title, descri
                                   <DialogHeader>
                                     <DialogTitle>Video Lessons Coming Soon</DialogTitle>
                                     <DialogDescription>
-                                      We're working with renowned professionals to bring you expert video lessons on this topic.
+                                      We&apos;re working with renowned professionals to bring you expert video lessons on this topic.
                                     </DialogDescription>
                                   </DialogHeader>
                                   <div className="space-y-4">

@@ -68,7 +68,7 @@ type IntakeData = {
 
 export default function Intake() {
   const params = useParams();
-  const _router = useRouter();
+  // const _router = useRouter();
   const { currentVenture, refreshVentures } = useVenture();
   const ventureId = params.id as string || currentVenture?.id;
   const isEditing = !!ventureId;
@@ -83,7 +83,7 @@ export default function Intake() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [stages, setStages] = useState<Stage[]>([]);
   const [currentStep, setCurrentStep] = useState(1);
-  const [_isLoading, setIsLoading] = useState(isEditing);
+  // const [_isLoading, setIsLoading] = useState(isEditing);
   const totalSteps = 6;
 
   // Load stages and venture data on component mount

@@ -5,6 +5,16 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: "/Users/julian/space-readiness"
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
   env: {
     NEXT_PUBLIC_GIT_COMMIT_SHA: (() => {
       try {

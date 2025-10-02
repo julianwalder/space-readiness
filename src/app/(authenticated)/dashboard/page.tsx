@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import { useVenture } from '@/contexts/VentureContext';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
@@ -252,7 +253,7 @@ export default function Dashboard() {
       .subscribe();
 
     return () => { supabase.removeChannel(ch); };
-  }, [currentVenture]);
+  }, [currentVenture, ventures]);
 
   // Create radar data showing all dimensions, with real scores where available
   const radarData = DIMENSIONS.map(dimension => {
@@ -539,9 +540,11 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm">
-                        <img 
+                        <Image 
                           src={investor.image} 
                           alt={investor.name}
+                          width={48}
+                          height={48}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -746,9 +749,11 @@ export default function Dashboard() {
                 >
                   <div className="flex items-center space-x-3 flex-1">
                     <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm">
-                      <img 
+                      <Image 
                         src={startup.image} 
                         alt={startup.name}
+                        width={48}
+                        height={48}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -841,9 +846,11 @@ export default function Dashboard() {
                       title={selectedFile.fileName}
                     />
                   ) : selectedFile.mimeType.startsWith('image/') ? (
-                    <img
+                    <Image
                       src={fileUrl}
                       alt={selectedFile.fileName}
+                      width={400}
+                      height={400}
                       className="max-w-full h-auto mx-auto rounded-lg shadow-lg"
                     />
                   ) : (
