@@ -12,7 +12,9 @@ export async function DELETE(
   { params }: { params: Promise<{ fileId: string }> }
 ) {
   try {
+    console.log('DELETE /api/upload/[fileId] - Starting request');
     const { fileId } = await params;
+    console.log('File ID for deletion:', fileId);
 
     if (!fileId) {
       return NextResponse.json(
@@ -41,6 +43,7 @@ export async function DELETE(
     }
 
     // Get file information with venture details
+    console.log('Querying file data for deletion...');
     const { data: fileData, error: fileError } = await supabase
       .from('files')
       .select(`
@@ -49,11 +52,11 @@ export async function DELETE(
         mime,
         size,
         submission_id,
-        submissions!inner(
+        submissions(
           id,
           venture_id,
           status,
-          ventures!inner(
+          ventures(
             id,
             name,
             org_id
@@ -64,14 +67,51 @@ export async function DELETE(
       .single();
 
     if (fileError || !fileData) {
+      console.log('File query error:', fileError);
       return NextResponse.json(
         { error: 'File not found' },
         { status: 404 }
       );
     }
+    console.log('File data found for deletion:', { id: fileData.id, path: fileData.path });
 
     // Verify user has access to this venture
-    const venture = fileData.submissions[0].ventures[0];
+    console.log('Checking venture access for deletion...');
+    console.log('Submissions structure:', JSON.stringify(fileData.submissions, null, 2));
+    
+    let venture = null;
+    
+    // Handle the array structure from Supabase
+    const submission = Array.isArray(fileData.submissions) ? fileData.submissions[0] : fileData.submissions;
+    if (submission && submission.ventures) {
+      // Handle ventures array structure
+      venture = Array.isArray(submission.ventures) ? submission.ventures[0] : submission.ventures;
+    }
+    
+    // If we still don't have venture data, try a fallback approach
+    if (!venture && submission && submission.venture_id) {
+      console.log('Falling back to direct venture query for venture_id:', submission.venture_id);
+      const { data: ventureData, error: ventureError } = await supabase
+        .from('ventures')
+        .select('id, name, org_id')
+        .eq('id', submission.venture_id)
+        .single();
+      
+      if (ventureData && !ventureError) {
+        venture = ventureData;
+        console.log('Fallback venture query successful:', venture);
+      }
+    }
+    
+    if (!venture) {
+      console.error('Could not retrieve venture information for deletion');
+      return NextResponse.json(
+        { error: 'Could not verify file access permissions' },
+        { status: 500 }
+      );
+    }
+    
+    console.log('Venture data for deletion:', { id: venture.id, name: venture.name, org_id: venture.org_id });
     if (venture.org_id) {
       const { data: membership, error: membershipError } = await supabase
         .from('memberships')
@@ -89,6 +129,7 @@ export async function DELETE(
     }
 
     // Delete file from storage
+    console.log('Deleting file from storage:', fileData.path);
     const { error: storageError } = await supabase.storage
       .from('readiness-uploads')
       .remove([fileData.path]);
@@ -96,9 +137,12 @@ export async function DELETE(
     if (storageError) {
       console.error('Failed to delete file from storage:', storageError);
       // Continue with database deletion even if storage deletion fails
+    } else {
+      console.log('File deleted from storage successfully');
     }
 
     // Delete file record from database (this will cascade to chunks if any)
+    console.log('Deleting file record from database...');
     const { error: deleteError } = await supabase
       .from('files')
       .delete()
@@ -111,8 +155,10 @@ export async function DELETE(
         { status: 500 }
       );
     }
+    console.log('File record deleted from database successfully');
 
     // Check if this was the last file in the submission
+    console.log('Checking if submission should be deleted...');
     const { data: remainingFiles, error: remainingError } = await supabase
       .from('files')
       .select('id')
@@ -120,12 +166,17 @@ export async function DELETE(
 
     if (!remainingError && (!remainingFiles || remainingFiles.length === 0)) {
       // Delete the submission if no files remain
+      console.log('No remaining files, deleting submission:', fileData.submission_id);
       await supabase
         .from('submissions')
         .delete()
         .eq('id', fileData.submission_id);
+      console.log('Submission deleted successfully');
+    } else {
+      console.log('Submission has remaining files, keeping submission');
     }
 
+    console.log('File deletion completed successfully');
     return NextResponse.json({
       success: true,
       message: 'File deleted successfully'
