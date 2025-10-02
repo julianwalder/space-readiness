@@ -633,11 +633,11 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Uploaded Files and Startups to Follow - Side by Side */}
-        <div className="mb-8 grid gap-6 lg:grid-cols-2">
+        {/* Uploaded Files and Startups to Follow - Stacked on mobile, side by side on desktop */}
+        <div className="mb-8 flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-6 w-full">
           {/* Uploaded Files - 50% */}
           {uploadedFiles.length > 0 && (
-            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="w-full max-w-full rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Uploaded Files</h2>
                 <Link 
@@ -649,38 +649,37 @@ export default function Dashboard() {
               </div>
               <div className="space-y-3">
                 {uploadedFiles.slice(0, 3).map((file) => (
-                  <div key={file.id} className="overflow-x-auto scrollbar-hide">
-                    <div 
-                      className="flex items-start p-3 bg-gray-50 rounded-lg min-w-max hover:bg-gray-100 transition-colors cursor-pointer"
-                      onClick={() => {
-                        setSelectedFile(file);
-                        fetchFileWithAuth(file.id);
-                      }}
-                    >
-                      <div className="flex items-center space-x-3 flex-shrink-0">
-                        <div className="flex-shrink-0 h-8 w-8 rounded bg-blue-100 flex items-center justify-center">
-                          <span className="text-xs font-medium text-blue-600">
-                            {file.fileName.split('.').pop()?.toUpperCase().slice(0, 3)}
-                          </span>
+                  <div 
+                    key={file.id} 
+                    className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                    onClick={() => {
+                      setSelectedFile(file);
+                      fetchFileWithAuth(file.id);
+                    }}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 h-8 w-8 rounded bg-blue-100 flex items-center justify-center">
+                        <span className="text-xs font-medium text-blue-600">
+                          {file.fileName.split('.').pop()?.toUpperCase().slice(0, 3)}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 truncate">
+                          {file.fileName}
                         </div>
-                        <div className="flex-shrink-0">
-                          <div className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                            {file.fileName}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {new Date(file.uploadedAt).toLocaleDateString()} • {formatFileSize(file.size)}
-                          </div>
-                          <div className="mt-1">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              file.submissionStatus === 'completed' 
-                                ? 'bg-green-100 text-green-800'
-                                : file.submissionStatus === 'processing'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
-                              {file.submissionStatus}
-                            </span>
-                          </div>
+                        <div className="text-xs text-gray-500">
+                          {new Date(file.uploadedAt).toLocaleDateString()} • {formatFileSize(file.size)}
+                        </div>
+                        <div className="mt-1">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            file.submissionStatus === 'completed' 
+                              ? 'bg-green-100 text-green-800'
+                              : file.submissionStatus === 'processing'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {file.submissionStatus}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -698,7 +697,7 @@ export default function Dashboard() {
           )}
 
           {/* Startups Worth Following - 50% */}
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="w-full max-w-full rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Startups Worth Following</h2>

@@ -404,7 +404,7 @@ export default function Upload() {
                       <tbody className="bg-white divide-y divide-gray-200">
                         {uploadedFiles.map((file) => (
                           <tr key={file.id}>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-6 py-4">
                               <div className="flex items-center">
                                 <div className="flex-shrink-0 h-8 w-8">
                                   <div className="h-8 w-8 rounded bg-blue-100 flex items-center justify-center">
@@ -413,11 +413,11 @@ export default function Upload() {
                                     </span>
                                   </div>
                                 </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">
+                                <div className="ml-4 min-w-0 flex-1">
+                                  <div className="text-sm font-medium text-gray-900 truncate">
                                     {file.fileName}
                                   </div>
-                                  <div className="text-sm text-gray-500">
+                                  <div className="text-sm text-gray-500 truncate">
                                     {file.mimeType}
                                   </div>
                                 </div>
