@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Shield, AlertTriangle, Smile, Mail, Home, Search } from 'lucide-react';
+import { Shield, AlertTriangle, Mail, Home, Search } from 'lucide-react';
 
 export default function FakeWordPressCatchAll() {
   const [showMessage, setShowMessage] = useState(false);
@@ -79,8 +79,8 @@ export default function FakeWordPressCatchAll() {
                   You tried to access: <code className="bg-pink-200 px-2 py-1 rounded">{attemptedPath}</code>
                 </h3>
                 <p className="text-pink-700">
-                  That's a WordPress-style path, but you're in a Next.js application! 
-                  It's like trying to use a Windows command in a Mac terminal! 🖥️
+                  That&apos;s a WordPress-style path, but you&apos;re in a Next.js application! 
+                  It&apos;s like trying to use a Windows command in a Mac terminal! 🖥️
                 </p>
               </div>
 

@@ -76,14 +76,14 @@ export default function FakeWordPressSetup() {
                   Hey there, curious visitor!
                 </h3>
                 <p className="text-blue-700">
-                  You're trying to access WordPress admin on a Next.js application. 
-                  That's like trying to use a screwdriver as a hammer! 🔨
+                  You&apos;re trying to access WordPress admin on a Next.js application. 
+                  That&apos;s like trying to use a screwdriver as a hammer! 🔨
                 </p>
               </div>
 
               <div className="bg-yellow-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-yellow-800 mb-2">
-                  📊 Your "Hacker" Stats:
+                  📊 Your &quot;Hacker&quot; Stats:
                 </h4>
                 <ul className="text-yellow-700 text-sm space-y-1">
                   <li>• Attempted WordPress access: ✅</li>

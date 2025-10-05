@@ -136,7 +136,7 @@ export default function FakeWordPressLogin() {
                   You tried to login {attempts} times!
                 </h3>
                 <p className="text-yellow-700">
-                  That's some serious dedication! But you're still in the wrong place. 
+                  That&apos;s some serious dedication! But you&apos;re still in the wrong place. 
                   This is a Next.js application, not WordPress! 🎯
                 </p>
               </div>

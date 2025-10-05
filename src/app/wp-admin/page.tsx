@@ -76,8 +76,8 @@ export default function FakeWordPressAdmin() {
                   Welcome to the fake WordPress admin!
                 </h3>
                 <p className="text-purple-700">
-                  You're looking for WordPress, but you found a Next.js application instead. 
-                  That's like ordering pizza and getting sushi! 🍣
+                  You&apos;re looking for WordPress, but you found a Next.js application instead. 
+                  That&apos;s like ordering pizza and getting sushi! 🍣
                 </p>
               </div>
 
