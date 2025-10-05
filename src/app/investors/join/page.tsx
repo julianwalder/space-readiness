@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
-export default function Signup() {
+export default function InvestorSignup() {
   const [email, setEmail] = useState('');
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -19,9 +19,9 @@ export default function Signup() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/investors/dashboard`,
           data: {
-            intended_role: 'founder'
+            intended_role: 'investor'
           }
         }
       });
@@ -50,7 +50,7 @@ export default function Signup() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback?next=/investors/dashboard`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -79,10 +79,10 @@ export default function Signup() {
           </Link>
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Create your account
+          Join as an Investor
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          We&apos;ll send you a magic link to sign in securely
+          Track portfolio ventures and monitor their readiness progress
         </p>
       </div>
 
@@ -103,7 +103,7 @@ export default function Signup() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                  placeholder="you@company.com"
+                  placeholder="you@investorfirm.com"
                 />
               </div>
             </div>
@@ -171,6 +171,17 @@ export default function Signup() {
             </div>
           )}
 
+          {/* Investor Benefits */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="text-sm font-medium text-blue-900 mb-2">Investor Benefits</h3>
+            <ul className="text-xs text-blue-800 space-y-1">
+              <li>• Track portfolio ventures in real-time</li>
+              <li>• Monitor readiness progress across 8 dimensions</li>
+              <li>• Access evidence-based assessments</li>
+              <li>• Compare ventures and identify bottlenecks</li>
+            </ul>
+          </div>
+
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -181,10 +192,16 @@ export default function Signup() {
               </div>
             </div>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-y-2">
+              <Link
+                href="/signup"
+                className="text-sm text-blue-600 hover:text-blue-500 font-medium block"
+              >
+                Sign up as a Founder instead
+              </Link>
               <Link
                 href="/"
-                className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                className="text-sm text-gray-600 hover:text-gray-500 font-medium block"
               >
                 Back to home
               </Link>
@@ -195,3 +212,4 @@ export default function Signup() {
     </div>
   );
 }
+

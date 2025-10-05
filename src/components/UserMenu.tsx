@@ -2,6 +2,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import { User, LogOut } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getUserProfile } from '@/lib/auth-utils';
 
 // Get build information
 const getBuildInfo = () => {
@@ -20,6 +23,8 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>('');
   const menuRef = useRef<HTMLDivElement>(null);
   const buildInfo = getBuildInfo();
 
@@ -34,6 +39,23 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
       setIsLoading(false);
     }
   };
+
+  // Load user profile data
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const profile = await getUserProfile();
+        if (profile) {
+          setAvatarUrl(profile.avatar_url || null);
+          setUserName(profile.full_name || '');
+        }
+      } catch (error) {
+        console.error('Error loading user profile:', error);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -55,11 +77,12 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-3 py-2 transition-colors"
       >
-        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-          <span className="text-white text-sm font-medium">
-            {userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}
-          </span>
-        </div>
+        <Avatar className="w-8 h-8">
+          {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
+          <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
+            {userName ? userName.charAt(0).toUpperCase() : userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}
+          </AvatarFallback>
+        </Avatar>
         <span className="hidden">{userEmail}</span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -72,12 +95,23 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+        <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
           <div className="py-1">
             <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-              <div className="font-medium">{userEmail}</div>
+              <div className="font-medium truncate" title={userEmail || ''}>{userEmail}</div>
               <div className="text-xs text-gray-500">Signed in</div>
             </div>
+            
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                router.push('/account');
+              }}
+              className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+            >
+              <User className="-ml-1 mr-3 h-4 w-4" />
+              Account Details
+            </button>
             
             <button
               onClick={handleLogout}
@@ -94,9 +128,7 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
                 </>
               ) : (
                 <>
-                  <svg className="-ml-1 mr-3 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
+                  <LogOut className="-ml-1 mr-3 h-4 w-4" />
                   Sign out
                 </>
               )}

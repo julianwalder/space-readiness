@@ -4,7 +4,7 @@ import IORedis from 'ioredis';
 
 export const dynamic = 'force-dynamic';
 
-export function makeRedis() {
+function makeRedis() {
   const url = process.env.REDIS_URL!;
   const isTLS = url.startsWith('rediss://');
   return new IORedis(url, {

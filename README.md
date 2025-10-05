@@ -25,7 +25,7 @@ An AI-powered venture readiness assessment platform that evaluates space industr
 ## 📋 Prerequisites
 
 - Node.js 18+ 
-- pnpm (recommended) or npm
+- npm
 - Supabase account
 - Redis instance (Upstash recommended)
 
@@ -41,7 +41,7 @@ cd space-readiness
 ### 2. Install Dependencies
 
 ```bash
-pnpm install
+npm install
 ```
 
 ### 3. Environment Setup
@@ -72,10 +72,10 @@ NODE_ENV=development
 
 ```bash
 # Start the Next.js development server
-pnpm dev
+npm run dev
 
 # In a separate terminal, start the worker
-pnpm worker
+npm run worker
 ```
 
 ### 6. Access the Application
@@ -104,16 +104,16 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```bash
 # Development
-pnpm dev          # Start development server
-pnpm worker       # Start BullMQ worker
+npm run dev          # Start development server
+npm run worker       # Start BullMQ worker
 
 # Production
-pnpm build        # Build for production
-pnpm start        # Start production server
+npm run build        # Build for production
+npm start            # Start production server
 
 # Testing & Debugging
-pnpm ping-redis   # Test Redis connectivity
-pnpm bullmq-smoke # Test BullMQ functionality
+npm run ping-redis   # Test Redis connectivity
+npm run bullmq-smoke # Test BullMQ functionality
 ```
 
 ## 🔒 Security

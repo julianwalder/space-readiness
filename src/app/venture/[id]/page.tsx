@@ -33,6 +33,8 @@ interface Venture {
   name: string;
   stage?: string;
   description?: string;
+  is_demo?: boolean;
+  visible_to_investors?: boolean;
   created_at: string;
   updated_at?: string;
 }
@@ -430,7 +432,56 @@ export default function VentureManagement() {
               <CardHeader>
                 <CardTitle className="text-lg">Actions</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                {/* Investor Visibility Toggle */}
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <label htmlFor="visibility-toggle" className="text-sm font-medium text-gray-700 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Visible to Investors
+                      </label>
+                      <p className="mt-1 text-xs text-gray-500">
+                        Allow investors to view this venture and its assessment data
+                      </p>
+                    </div>
+                    <button
+                      id="visibility-toggle"
+                      type="button"
+                      onClick={async () => {
+                        const newValue = !venture.visible_to_investors;
+                        try {
+                          const { error } = await supabase
+                            .from('ventures')
+                            .update({ visible_to_investors: newValue })
+                            .eq('id', venture.id);
+
+                          if (error) throw error;
+
+                          setVenture(prev => prev ? { ...prev, visible_to_investors: newValue } : null);
+                          await refreshVentures();
+                        } catch (err) {
+                          console.error('Error updating visibility:', err);
+                          alert('Failed to update visibility setting');
+                        }
+                      }}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                        venture.visible_to_investors ? 'bg-blue-600' : 'bg-gray-200'
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                          venture.visible_to_investors ? 'translate-x-5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Delete Button */}
                 <button
                   onClick={() => setShowDeleteDialog(true)}
                   className="w-full inline-flex items-center justify-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 transition-colors"

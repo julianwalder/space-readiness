@@ -79,19 +79,48 @@ export function VentureProvider({ children }: { children: ReactNode }) {
   const [currentVenture, setCurrentVenture] = useState<Venture | null>(null);
   const [ventures, setVentures] = useState<Venture[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   const refreshVentures = useCallback(async (selectNewVentureId?: string) => {
     try {
+      // Check user role first
+      const { data: { user } } = await supabase.auth.getUser();
+      const role = user?.app_metadata?.role || 'founder';
+      setUserRole(role);
+
+      // Skip venture loading for investors - they have their own dashboard
+      if (role === 'investor') {
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('Attempting to load ventures for user:', user?.id, 'role:', role);
+
       const { data, error } = await supabase
         .from('ventures')
         .select('*')
         .order('created_at', { ascending: false });
-      
-      if (error) throw error;
+
+      console.log('Query result:', { data: data?.length, error });
+
+      if (error) {
+        console.error('Error loading ventures:', error);
+        console.error('Error JSON:', JSON.stringify(error, null, 2));
+        console.error('Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+          status: (error as any).status,
+          statusCode: (error as any).statusCode
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const ventures = data || [];
-      
-      setVentures(ventures || []);
-      
+      setVentures(ventures);
+
       // If a specific venture ID is provided, select that venture
       if (selectNewVentureId) {
         const newVenture = ventures.find(v => v.id === selectNewVentureId);
@@ -103,11 +132,14 @@ export function VentureProvider({ children }: { children: ReactNode }) {
         setCurrentVenture(ventures[0]);
       }
     } catch (error) {
-      console.error('Error loading ventures:', error);
+      // Only log actual errors, not RLS permission denials for investors
+      if (userRole !== 'investor') {
+        console.error('Error loading ventures:', error);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [currentVenture]);
+  }, [currentVenture, userRole]);
 
   useEffect(() => {
     refreshVentures();

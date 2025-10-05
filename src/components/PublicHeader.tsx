@@ -16,9 +16,12 @@ export default function PublicHeader({ showGetStarted = true }: PublicHeaderProp
           </div>
           {showGetStarted && (
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-400 hidden sm:block">
-                For Investors - Available Soon
-              </span>
+              <Link 
+                href="/investors/join" 
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 hidden sm:block"
+              >
+                For Investors
+              </Link>
               <Link 
                 href="/signup" 
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"

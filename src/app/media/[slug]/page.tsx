@@ -67,8 +67,9 @@ function getPressRelease(slug: string) {
 }
 
 // Generate metadata for each press release
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const release = getPressRelease(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const release = getPressRelease(slug);
   
   if (!release) {
     return {
@@ -106,8 +107,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function PressReleasePage({ params }: { params: { slug: string } }) {
-  const release = getPressRelease(params.slug);
+export default async function PressReleasePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const release = getPressRelease(slug);
 
   if (!release) {
     notFound();
