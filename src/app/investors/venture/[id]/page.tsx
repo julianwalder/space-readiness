@@ -97,11 +97,6 @@ export default function InvestorVentureDetail() {
     }
   }, [ventureId, router]);
 
-  const getScoreColor = (score: number) => {
-    if (score >= 7) return 'bg-green-100 text-green-800';
-    if (score >= 5) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
-  };
 
   const getAverageScore = () => {
     if (scores.length === 0) return null;
@@ -198,10 +193,16 @@ export default function InvestorVentureDetail() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Readiness Assessment</h2>
             <div className="grid gap-6 lg:grid-cols-2">
               <ReadinessRadarChart 
-                scores={scores} 
+                scores={scores.map(score => ({
+                  ...score,
+                  confidence: score.confidence ?? 0
+                }))} 
               />
               <ReadinessScoresTable 
-                scores={scores}
+                scores={scores.map(score => ({
+                  ...score,
+                  confidence: score.confidence ?? 0
+                }))}
                 title="Detailed Scores"
               />
             </div>

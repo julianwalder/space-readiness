@@ -14,7 +14,7 @@ interface ReadinessRadarChartProps {
   height?: string;
 }
 
-export default function ReadinessRadarChart({ scores, height = "h-96" }: ReadinessRadarChartProps) {
+export default function ReadinessRadarChart({ scores }: ReadinessRadarChartProps) {
   // Ensure consistent data format for radar chart - always in DIMENSIONS order
   const radarData = useMemo(() => {
     return DIMENSIONS.map(dimension => {

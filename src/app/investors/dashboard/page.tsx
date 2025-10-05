@@ -173,7 +173,7 @@ export default function InvestorDashboard() {
               No ventures are currently visible. Ventures will appear here once founders make them visible to investors.
             </p>
             <p className="mt-2 text-xs text-gray-400">
-              Note: If you're setting up for the first time, you may need to run the database migration (see docs/INVESTOR_AUTH_SETUP.md).
+              Note: If you&apos;re setting up for the first time, you may need to run the database migration (see docs/INVESTOR_AUTH_SETUP.md).
             </p>
           </div>
         ) : (

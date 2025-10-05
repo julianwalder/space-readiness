@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Trash2, User, Link, AlertTriangle, Upload, X } from 'lucide-react';
+import Image from 'next/image';
 
 interface AccountDetailsProps {
   userEmail: string | null;
@@ -56,13 +57,13 @@ export default function AccountDetails({ userEmail }: AccountDetailsProps) {
         // Check for Google connection - look for Google-specific metadata
         const isGoogleUser = user.user_metadata?.iss?.includes('google.com') ||
                            user.user_metadata?.avatar_url?.includes('googleusercontent.com') ||
-                           user.identities?.some((identity: any) => identity.provider === 'google');
+                           user.identities?.some((identity: { provider: string }) => identity.provider === 'google');
         
         if (isGoogleUser) {
           // Try multiple possible avatar URL fields
-          let googleAvatar = user.user_metadata?.avatar_url || 
-                           user.user_metadata?.picture || 
-                           user.user_metadata?.photo_url;
+          const googleAvatar = user.user_metadata?.avatar_url || 
+                             user.user_metadata?.picture || 
+                             user.user_metadata?.photo_url;
           
           // If no avatar URL is found, try to construct one from Google's API
           if (!googleAvatar && user.user_metadata?.provider_id) {
@@ -73,7 +74,7 @@ export default function AccountDetails({ userEmail }: AccountDetailsProps) {
           
           providers.push({
             provider: 'Google',
-            email: user.email,
+            email: user.email || '',
             connected: true,
             avatar_url: googleAvatar
           });
@@ -82,10 +83,10 @@ export default function AccountDetails({ userEmail }: AccountDetailsProps) {
         
         // Check for email/password connection
         if (user.app_metadata?.provider === 'email' || 
-            user.identities?.some((identity: any) => identity.provider === 'email')) {
+            user.identities?.some((identity: { provider: string }) => identity.provider === 'email')) {
           providers.push({
             provider: 'Email',
-            email: user.email,
+            email: user.email || '',
             connected: true
           });
         }
@@ -354,9 +355,11 @@ export default function AccountDetails({ userEmail }: AccountDetailsProps) {
               <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-3">
                   {connection.avatar_url ? (
-                    <img 
+                    <Image 
                       src={connection.avatar_url} 
                       alt={`${connection.provider} profile`}
+                      width={40}
+                      height={40}
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (

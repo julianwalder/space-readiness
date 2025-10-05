@@ -111,8 +111,8 @@ export function VentureProvider({ children }: { children: ReactNode }) {
           details: error.details,
           hint: error.hint,
           code: error.code,
-          status: (error as any).status,
-          statusCode: (error as any).statusCode
+          status: (error as { status?: number }).status,
+          statusCode: (error as { statusCode?: number }).statusCode
         });
         setIsLoading(false);
         return;

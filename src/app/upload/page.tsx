@@ -1,7 +1,5 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useVenture } from '@/contexts/VentureContext';
 import BackHeader from '@/components/BackHeader';
@@ -18,7 +16,6 @@ interface UploadedFile {
 }
 
 export default function Upload() {
-  const router = useRouter();
   const { currentVenture } = useVenture();
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);

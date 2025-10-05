@@ -21,7 +21,7 @@ export default function AccountPage() {
         return;
       }
 
-      setUserEmail(user.email);
+      setUserEmail(user.email || null);
       
       // Get user role
       const role = await getUserRole();
